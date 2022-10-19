@@ -13,7 +13,7 @@ import java.util.Map;
 @Service
 public class QuestionnaireModelValueProviderImpl implements QuestionnaireModelValueProvider {
 
-    @Value("${questionnaire.model.value.provider.uri:#{null}}")
+    @Value("${fr.insee.questionnaire.model.value.provider.uri:#{null}}")
     private String questionnaireModelValueProviderUri;
 
     @Override

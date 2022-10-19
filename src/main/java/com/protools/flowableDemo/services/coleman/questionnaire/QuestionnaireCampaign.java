@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.Map;
 
 @Service
-public interface Campaign {
+public interface QuestionnaireCampaign {
     public abstract void createContext(
-            CampaignContext context,
+            QuestionnaireCampaignContext context,
             Map<String, String>nomenclatureLabelsMappedById,
             Map<String, String>questionnaireModelLabelsMappedById,
             Map<String, Collection<String>>requiredNomenclatureIdsMappedByQuestionnaireModelId) throws Exception;

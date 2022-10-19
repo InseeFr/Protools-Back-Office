@@ -1,15 +1,15 @@
 package com.protools.flowableDemo.services.coleman.pilotage;
 
-public class CampaignContext {
+public class PilotageCampaignContext {
     private String id;
     private String label;
     private Long collectionStartDate;
     private Long collectionEndDate;
 
-    public CampaignContext() {
+    public PilotageCampaignContext() {
     }
 
-    public CampaignContext(String id, String label, Long collectionStartDate, Long collectionEndDate) {
+    public PilotageCampaignContext(String id, String label, Long collectionStartDate, Long collectionEndDate) {
         this.id = id;
         this.label = label;
         this.collectionStartDate = collectionStartDate;

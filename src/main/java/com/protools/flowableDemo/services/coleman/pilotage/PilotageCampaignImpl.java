@@ -8,27 +8,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class CampaignImpl implements Campaign {
+public class PilotageCampaignImpl implements PilotageCampaign {
 
-    @Value("${coleman.pilotage.uri:#{null}}")
+    @Value("${fr.insee.coleman.pilotage.uri:#{null}}")
     private String colemanPilotageUri;
 
     @Autowired
     private KeycloakService keycloakService;
 
     @Override
-    public void createContext(CampaignContext context) throws Exception {
+    public void createContext(PilotageCampaignContext context) throws Exception {
         String token = keycloakService.getContextReferentialToken();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
 
-        HttpEntity<CampaignContext> request = new HttpEntity<>(context, headers);
+        HttpEntity<PilotageCampaignContext> request = new HttpEntity<>(context, headers);
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<CampaignContext> response = restTemplate.exchange(
-                colemanPilotageUri + "/campaigns", HttpMethod.POST, request, CampaignContext.class);
+        ResponseEntity<PilotageCampaignContext> response = restTemplate.exchange(
+                colemanPilotageUri + "/campaigns", HttpMethod.POST, request, PilotageCampaignContext.class);
     }
 
 }

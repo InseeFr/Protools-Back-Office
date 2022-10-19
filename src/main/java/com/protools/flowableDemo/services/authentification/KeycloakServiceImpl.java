@@ -13,16 +13,16 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 public class KeycloakServiceImpl implements KeycloakService {
 
-    @Value("${keycloak.auth.server.uri:#{null}}")
+    @Value("${fr.insee.keycloak.auth.server.uri:#{null}}")
     private String authServerUri;
 
-    @Value("${keycloak.realm:#{null}}")
+    @Value("${fr.insee.keycloak.realm:#{null}}")
     private String realm;
 
-    @Value("${keycloak.client.id:#{null}}")
+    @Value("${fr.insee.keycloak.client.id:#{null}}")
     private String clientId;
 
-    @Value("${keycloak.client.secret:#{null}}")
+    @Value("${fr.insee.keycloak.client.secret:#{null}}")
     private String clientSecret;
 
     private AtomicReference<Token> token = new AtomicReference<>(new Token("", -1));

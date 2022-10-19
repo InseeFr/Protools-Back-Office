@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 
 import java.util.Collection;
 
-public class CampaignContext {
+public class QuestionnaireCampaignContext {
     private String id;
     private String label;
     private MetadataValue metadata;
     private Collection<String> questionnaireModelIds;
 
-    public CampaignContext() {
+    public QuestionnaireCampaignContext() {
     }
 
-    public CampaignContext(String id, String label, MetadataValue metadata, Collection<String> questionnaireModelIds) {
+    public QuestionnaireCampaignContext(String id, String label, MetadataValue metadata, Collection<String> questionnaireModelIds) {
         this.id = id;
         this.label = label;
         this.metadata = metadata;

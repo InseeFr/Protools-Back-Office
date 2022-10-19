@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 @Service
 public class NomenclatureValueProviderImpl implements NomenclatureValueProvider {
 
-    @Value("${nomenclature.value.provider.uri:#{null}}")
+    @Value("${fr.insee.nomenclature.value.provider.uri:#{null}}")
     private String nomenclatureValueProviderUri;
 
     @Override

@@ -13,9 +13,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 @Service
-public class CampaignImpl implements Campaign {
+public class QuestionnaireCampaignImpl implements QuestionnaireCampaign {
 
-    @Value("${coleman.questionnaire.uri:#{null}}")
+    @Value("${fr.insee.coleman.questionnaire.uri:#{null}}")
     private String colemanQuestionnaireUri;
 
     @Autowired
@@ -29,7 +29,7 @@ public class CampaignImpl implements Campaign {
 
     @Override
     public void createContext(
-            CampaignContext context,
+            QuestionnaireCampaignContext context,
             Map<String, String> nomenclatureLabelsMappedById,
             Map<String, String>questionnaireModelLabelsMappedById,
             Map<String, Collection<String>> requiredNomenclatureIdsMappedByQuestionnaireModelId) throws Exception {
@@ -100,16 +100,16 @@ public class CampaignImpl implements Campaign {
                 QuestionnaireModel.class);
     }
 
-    private void postCampaignContext(CampaignContext context) throws Exception {
+    private void postCampaignContext(QuestionnaireCampaignContext context) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(keycloakService.getContextReferentialToken());
 
-        HttpEntity<CampaignContext> request = new HttpEntity<>(context, headers);
+        HttpEntity<QuestionnaireCampaignContext> request = new HttpEntity<>(context, headers);
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<CampaignContext> response = restTemplate.exchange(
-                colemanQuestionnaireUri + "/campaigns", HttpMethod.POST, request, CampaignContext.class);
+        ResponseEntity<QuestionnaireCampaignContext> response = restTemplate.exchange(
+                colemanQuestionnaireUri + "/campaigns", HttpMethod.POST, request, QuestionnaireCampaignContext.class);
     }
 
 }
