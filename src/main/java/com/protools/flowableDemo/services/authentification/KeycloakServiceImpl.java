@@ -25,7 +25,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     @Value("${fr.insee.keycloak.client.secret:#{null}}")
     private String clientSecret;
 
-    private AtomicReference<Token> token = new AtomicReference<>(new Token("", -1));
+    private final AtomicReference<Token> token = new AtomicReference<>(new Token("", -1));
 
     @Override
     public String getContextReferentialToken() throws Exception {
@@ -63,7 +63,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 
         endValidityTimeMillis += TimeUnit.SECONDS.toMillis(body.getExpires_in());
 
-        token = new AtomicReference<>(new Token(body.getAccess_token(), endValidityTimeMillis));
+        token.set(new Token(body.getAccess_token(), endValidityTimeMillis));
     }
 
 }
