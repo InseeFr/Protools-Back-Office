@@ -1,5 +1,6 @@
 package com.protools.flowableDemo.services.authentification;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class KeycloakServiceImpl implements KeycloakService {
     @Value("${fr.insee.keycloak.client.secret:#{null}}")
     private String clientSecret;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     private final AtomicReference<Token> token = new AtomicReference<>(new Token("", -1));
 
     @Override
@@ -47,8 +51,6 @@ public class KeycloakServiceImpl implements KeycloakService {
         requestBody.add("client_secret", clientSecret);
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
-
-        RestTemplate restTemplate = new RestTemplate();
 
         long endValidityTimeMillis = System.currentTimeMillis();
 
