@@ -16,6 +16,9 @@ public class PilotageCampaignImpl implements PilotageCampaign {
     @Autowired
     private KeycloakService keycloakService;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Override
     public void createContext(PilotageCampaignContext context) throws Exception {
         String token = keycloakService.getContextReferentialToken();
@@ -25,10 +28,9 @@ public class PilotageCampaignImpl implements PilotageCampaign {
 
         HttpEntity<PilotageCampaignContext> request = new HttpEntity<>(context, headers);
 
-        RestTemplate restTemplate = new RestTemplate();
+        String uri = colemanPilotageUri + "/campaigns";
 
-        ResponseEntity<PilotageCampaignContext> response = restTemplate.exchange(
-                colemanPilotageUri + "/campaigns", HttpMethod.POST, request, PilotageCampaignContext.class);
+        restTemplate.exchange(uri, HttpMethod.POST, request, PilotageCampaignContext.class);
     }
 
 }
