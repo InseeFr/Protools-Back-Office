@@ -30,7 +30,7 @@ public class QuestionnaireModelValueProviderImpl implements QuestionnaireModelVa
     }
 
     private String getPath(CollectionPlatform platform, String questionnaireModelId) {
-        return platform.name().toLowerCase() + "/" + questionnaireModelId + ".json";
+        return platform.name() + "/" + questionnaireModelId + ".json";
     }
 
 }

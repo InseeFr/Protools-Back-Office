@@ -29,7 +29,7 @@ public class QuestionnaireModelValueProviderImplTest {
         field.setAccessible(true);
         field.set(provider, questionnaireModelValueProviderUri);
 
-        CollectionPlatform platform = CollectionPlatform.COLEMAN;
+        CollectionPlatform platform = CollectionPlatform.coleman;
 
         String questionnaireModelId = "model_1";
 
