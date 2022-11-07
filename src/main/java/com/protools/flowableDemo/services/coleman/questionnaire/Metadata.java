@@ -1,36 +1,24 @@
 package com.protools.flowableDemo.services.coleman.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import lombok.Data;
 
 import java.util.Collection;
+import java.util.Map;
 
+@Data
 public class Metadata {
-    private String context;
+    private final String context;
 
-    private Collection<MetadataVariable> variables;
-
-    public Metadata() {
-    }
-
-    public Metadata(String context, Collection<MetadataVariable> variables) {
-        this.context = context;
-        this.variables = variables;
-    }
+    private final Collection<MetadataVariable> variables;
 
     @JsonGetter(value = "inseeContext")
     public String getContext() {
         return context;
     }
 
-    public void setContext(String context) {
-        this.context = context;
-    }
-
-    public Collection<MetadataVariable> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(Collection<MetadataVariable> variables) {
-        this.variables = variables;
+    @JsonGetter(value = "value")
+    public Map<String, Collection<MetadataVariable>> getVariables() {
+        return Map.of("variables", variables);
     }
 }

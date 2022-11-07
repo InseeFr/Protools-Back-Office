@@ -1,42 +1,14 @@
 package com.protools.flowableDemo.services.coleman.questionnaire;
 
+import lombok.Data;
+
 import java.util.Collection;
 
+@Data
 public class Nomenclature {
-    private String id;
-    private String label;
-    private Collection<?> value;
+    private final String id;
 
-    public Nomenclature() {
-    }
+    private final String label;
 
-    public Nomenclature(String id, String label, Collection<?> value) {
-        this.id = id;
-        this.label = label;
-        this.value = value;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public Collection<?> getValue() {
-        return value;
-    }
-
-    public void setValue(Collection<?> value) {
-        this.value = value;
-    }
+    private final Collection<?> value;
 }

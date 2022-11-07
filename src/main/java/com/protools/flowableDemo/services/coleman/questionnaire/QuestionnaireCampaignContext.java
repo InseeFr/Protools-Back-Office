@@ -1,55 +1,22 @@
 package com.protools.flowableDemo.services.coleman.questionnaire;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import lombok.Data;
 
 import java.util.Collection;
 
+@Data
 public class QuestionnaireCampaignContext {
-    private String id;
-    private String label;
-    private MetadataValue metadata;
-    private Collection<String> questionnaireModelIds;
+    private final String id;
 
-    public QuestionnaireCampaignContext() {
-    }
+    private final String label;
 
-    public QuestionnaireCampaignContext(String id, String label, MetadataValue metadata, Collection<String> questionnaireModelIds) {
-        this.id = id;
-        this.label = label;
-        this.metadata = metadata;
-        this.questionnaireModelIds = questionnaireModelIds;
-    }
+    private final Metadata metadata;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public MetadataValue getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(MetadataValue metadata) {
-        this.metadata = metadata;
-    }
+    private final Collection<String> questionnaireModelIds;
 
     @JsonGetter(value = "questionnaireIds")
     public Collection<String> getQuestionnaireModelIds() {
         return questionnaireModelIds;
-    }
-
-    public void setQuestionnaireModelIds(Collection<String> questionnaireModelIds) {
-        this.questionnaireModelIds = questionnaireModelIds;
     }
 }
