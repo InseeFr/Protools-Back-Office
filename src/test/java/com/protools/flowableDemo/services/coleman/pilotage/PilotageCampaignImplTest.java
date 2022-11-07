@@ -24,7 +24,7 @@ public class PilotageCampaignImplTest {
     private PilotageCampaignImpl pilotageCampaign = new PilotageCampaignImpl();
 
     @Test
-    public void givenMockingIsDoneByMockito_whenExchangeIsCalled_shouldReturnMockedObject() throws Exception {
+    public void givenMockingIsDoneByMockito_whenContextCreationIsCalled_shouldPostContext() throws Exception {
         String colemanPilotageUri = "https://coleman-pilotage";
 
         Field field = pilotageCampaign.getClass().getDeclaredField("colemanPilotageUri");
@@ -39,19 +39,17 @@ public class PilotageCampaignImplTest {
         PilotageCampaignContext context = new PilotageCampaignContext(
                 "id", "label", 0L, 0L);
 
-        HttpEntity<PilotageCampaignContext> request = new HttpEntity<>(context, headers);
-
-        String uri = colemanPilotageUri + "/campaigns";
-
         Mockito
                 .when(keycloakService.getContextReferentialToken())
                 .thenReturn(token);
 
-        Mockito
-                .when(restTemplate.exchange(uri, HttpMethod.POST, request, PilotageCampaignContext.class))
-                .thenReturn(new ResponseEntity<>(HttpStatus.OK));
-
         pilotageCampaign.createContext(context);
+
+        Mockito.verify(restTemplate).exchange(
+                colemanPilotageUri + "/campaigns",
+                HttpMethod.POST,
+                new HttpEntity<>(context, headers),
+                PilotageCampaignContext.class);
     }
 }
 
