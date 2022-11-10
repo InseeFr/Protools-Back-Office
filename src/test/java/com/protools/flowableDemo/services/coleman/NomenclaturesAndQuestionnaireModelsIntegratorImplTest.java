@@ -1,20 +1,27 @@
-package com.protools.flowableDemo.services.coleman.questionnaire;
+package com.protools.flowableDemo.services.coleman;
 
+import com.protools.flowableDemo.dto.Nomenclature;
+import com.protools.flowableDemo.dto.QuestionnaireModel;
 import com.protools.flowableDemo.enums.CollectionPlatform;
 import com.protools.flowableDemo.services.authentification.KeycloakService;
 import com.protools.flowableDemo.services.providers.NomenclatureValueProvider;
 import com.protools.flowableDemo.services.providers.QuestionnaireModelValueProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 public class NomenclaturesAndQuestionnaireModelsIntegratorImplTest {
@@ -43,38 +50,36 @@ public class NomenclaturesAndQuestionnaireModelsIntegratorImplTest {
         field.setAccessible(true);
         field.set(integrator, colemanQuestionnaireUri);
 
-        Collection<String> questionnaireModelIds = List.of("model-1", "model-2", "model-3");
-
-        Map<String, String>questionnaireModelLabelsMappedById = Map.of(
-                "model-1", "label-model-1",
-                "model-2", "label-model-2",
-                "model-3", "label-model-3");
-
-        Map<String, Collection<String>> requiredNomenclatureIdsMappedByQuestionnaireModelId = Map.of(
-                "model-1", List.of("nomenclature-1", "nomenclature-2"),
-                "model-3", List.of("nomenclature-2", "nomenclature-3"));
-
-        Map<String, String> nomenclatureLabelsMappedById = Map.of(
-                "nomenclature-1", "label-nomenclature-1",
-                "nomenclature-2", "label-nomenclature-2",
-                "nomenclature-3", "label-nomenclature-3");
-
-        Collection<String> allRequiredNomenclaturesIds = new ArrayList<>(nomenclatureLabelsMappedById.keySet());
-
         String token = "token-value";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         Mockito
                 .when(keycloakService.getContextReferentialToken())
                 .thenReturn(token);
 
-        integrator.execute(
-                questionnaireModelIds,
-                questionnaireModelLabelsMappedById,
-                requiredNomenclatureIdsMappedByQuestionnaireModelId,
-                nomenclatureLabelsMappedById);
+        Collection<String> questionnaireModelIds = List.of("model-1", "model-2", "model-3");
+
+        Collection<QuestionnaireModel> models = List.of(
+                new QuestionnaireModel("model-1","label-model-1",
+                        List.of("nomenclature-1", "nomenclature-2"), Map.of()),
+                new QuestionnaireModel("model-2","label-model-3",
+                        List.of(), Map.of()),
+                new QuestionnaireModel("model-3","label-model-3",
+                        List.of("nomenclature-2", "nomenclature-3"), Map.of())
+        );
+
+        Collection<String> allRequiredNomenclaturesIds = List.of("nomenclature-1", "nomenclature-2", "nomenclature-3");
+
+        List<Nomenclature> nomenclatures = List.of(
+                new Nomenclature("nomenclature-1", "label-nomenclature-1", List.of()),
+                new Nomenclature("nomenclature-2", "label-nomenclature-2", List.of()),
+                new Nomenclature("nomenclature-3", "label-nomenclature-3", List.of())
+        );
+
+        integrator.execute(models, nomenclatures);
 
         Mockito.verify(nomenclatureValueProvider, Mockito.times(allRequiredNomenclaturesIds.size())).
                 getNomenclatureValue(Mockito.anyString());
@@ -96,9 +101,7 @@ public class NomenclaturesAndQuestionnaireModelsIntegratorImplTest {
                 Mockito.any(),
                 Mockito.eq(Nomenclature.class));
 
-        for (String id : allRequiredNomenclaturesIds) {
-            Nomenclature nomenclature = new Nomenclature(id, nomenclatureLabelsMappedById.get(id), List.of());
-
+        for (Nomenclature nomenclature : nomenclatures) {
             Mockito.verify(restTemplate).exchange(
                     colemanQuestionnaireUri + "/nomenclature",
                     HttpMethod.POST,
@@ -112,15 +115,11 @@ public class NomenclaturesAndQuestionnaireModelsIntegratorImplTest {
                 Mockito.any(),
                 Mockito.eq(QuestionnaireModel.class));
 
-        for (String id : questionnaireModelIds) {
-            QuestionnaireModel questionnaireModel = new QuestionnaireModel(
-                    id,  questionnaireModelLabelsMappedById.get(id),
-                    requiredNomenclatureIdsMappedByQuestionnaireModelId.getOrDefault(id, List.of()), Map.of());
-
+        for (QuestionnaireModel model : models) {
             Mockito.verify(restTemplate).exchange(
                     colemanQuestionnaireUri + "/questionnaire-models",
                     HttpMethod.POST,
-                    new HttpEntity<>(questionnaireModel, headers),
+                    new HttpEntity<>(model, headers),
                     QuestionnaireModel.class);
         }
     }

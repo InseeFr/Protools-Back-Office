@@ -1,5 +1,7 @@
-package com.protools.flowableDemo.services.coleman.questionnaire;
+package com.protools.flowableDemo.services.coleman;
 
+import com.protools.flowableDemo.dto.Nomenclature;
+import com.protools.flowableDemo.dto.QuestionnaireModel;
 import com.protools.flowableDemo.enums.CollectionPlatform;
 import com.protools.flowableDemo.services.authentification.KeycloakService;
 import com.protools.flowableDemo.services.providers.NomenclatureValueProvider;
@@ -9,10 +11,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Service
 public class NomenclaturesAndQuestionnaireModelsIntegratorImpl implements
         NomenclaturesAndQuestionnaireModelsIntegrator {
 
@@ -32,52 +41,47 @@ public class NomenclaturesAndQuestionnaireModelsIntegratorImpl implements
     private RestTemplate restTemplate;
 
     @Override
-    public void execute(
-            Collection<String> questionnaireModelIds,
-            Map<String, String> questionnaireModelLabelsMappedById,
-            Map<String, Collection<String>> requiredNomenclatureIdsMappedByQuestionnaireModelId,
-            Map<String, String> nomenclatureLabelsMappedById) throws Exception {
+    public void execute(Collection<QuestionnaireModel> models,
+                        Collection<Nomenclature> nomenclatures) throws Exception {
 
-        for (String id : getAllRequiredNomenclaturesIds(
-                questionnaireModelIds, requiredNomenclatureIdsMappedByQuestionnaireModelId)) {
+        Map<String, String> nomenclatureLabelsMappedById = getNomenclatureLabelsMappedById(nomenclatures);
 
+        for (String id : getAllRequiredNomenclaturesIds(models)) {
             String label = nomenclatureLabelsMappedById.get(id);
             Collection<?> value = nomenclatureValueProvider.getNomenclatureValue(id);
 
             postNomenclature(new Nomenclature(id, label, value));
         }
 
-        for (String id : questionnaireModelIds) {
-            String label = questionnaireModelLabelsMappedById.get(id);
-            Collection<String> requiredNomenclatureIds =
-                    requiredNomenclatureIdsMappedByQuestionnaireModelId.getOrDefault(id, List.of());
+        for (QuestionnaireModel model : models) {
+            String id = model.getId();
+            String label = model.getLabel();
+            Collection<String> requiredNomenclatureIds = model.getRequiredNomenclatureIds();
             Map<?, ?> value = questionnaireModelValueProvider.getQuestionnaireModelValue(
-                    CollectionPlatform.coleman, id);
+                    CollectionPlatform.coleman, model.getId());
 
             postQuestionnaireModel(new QuestionnaireModel(id, label, requiredNomenclatureIds, value));
         }
     }
 
-    private Collection<String> getAllRequiredNomenclaturesIds(
-            Collection<String> questionnaireModelIds,
-            Map<String, Collection<String>> requiredNomenclatureIdsMappedByQuestionnaireModelId) {
-
+    private Collection<String> getAllRequiredNomenclaturesIds(Collection<QuestionnaireModel> models) {
         Set<String> allRequiredNomenclaturesIds = new HashSet<>();
 
-        for (String id : questionnaireModelIds) {
-            Collection<String> questionnaireModelRequiredNomenclatureIds =
-                    requiredNomenclatureIdsMappedByQuestionnaireModelId.getOrDefault(id, List.of());
-
-            allRequiredNomenclaturesIds.addAll(questionnaireModelRequiredNomenclatureIds);
+        for (QuestionnaireModel model : models) {
+            allRequiredNomenclaturesIds.addAll(model.getRequiredNomenclatureIds());
         }
 
         return allRequiredNomenclaturesIds;
     }
 
+    private Map<String, String> getNomenclatureLabelsMappedById(Collection<Nomenclature> nomenclatures) {
+        return nomenclatures.stream().collect(Collectors.toMap(Nomenclature::getId, Nomenclature::getLabel));
+    }
+
     private void postNomenclature(Nomenclature nomenclature) throws Exception {
         String uri = colemanQuestionnaireUri + "/nomenclature";
 
-        HttpEntity<Nomenclature> request = new HttpEntity<>(nomenclature, getHeadersWithBearerAuth());
+        HttpEntity<Nomenclature> request = new HttpEntity<>(nomenclature, getHeadersWithBearerAuthAndContentType());
 
         restTemplate.exchange(uri, HttpMethod.POST, request, Nomenclature.class);
     }
@@ -85,15 +89,18 @@ public class NomenclaturesAndQuestionnaireModelsIntegratorImpl implements
     private void postQuestionnaireModel(QuestionnaireModel questionnaireModel) throws Exception {
         String uri = colemanQuestionnaireUri + "/questionnaire-models";
 
-        HttpEntity<QuestionnaireModel> request = new HttpEntity<>(questionnaireModel, getHeadersWithBearerAuth());
+        HttpEntity<QuestionnaireModel> request = new HttpEntity<>(
+                questionnaireModel, getHeadersWithBearerAuthAndContentType());
 
         restTemplate.exchange(uri, HttpMethod.POST, request, QuestionnaireModel.class);
     }
 
-    private HttpHeaders getHeadersWithBearerAuth() throws Exception {
+    private HttpHeaders getHeadersWithBearerAuthAndContentType() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(keycloakService.getContextReferentialToken());
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         return headers;
     }
+
 }

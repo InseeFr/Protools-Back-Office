@@ -1,9 +1,12 @@
-package com.protools.flowableDemo.services.coleman.questionnaire;
+package com.protools.flowableDemo.services.coleman;
 
 import com.protools.flowableDemo.services.authentification.KeycloakService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,6 +28,7 @@ public class QuestionnaireCampaignImpl implements QuestionnaireCampaign {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<QuestionnaireCampaignContext> request = new HttpEntity<>(context, headers);
 

@@ -1,4 +1,4 @@
-package com.protools.flowableDemo.services.coleman.questionnaire;
+package com.protools.flowableDemo.services.coleman;
 
 import com.protools.flowableDemo.services.authentification.KeycloakService;
 import org.junit.jupiter.api.Test;
@@ -10,13 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class QuestionnaireCampaignImplTest {
+public class PilotageCampaignImplTest {
     @Mock
     private KeycloakService keycloakService;
 
@@ -24,35 +24,36 @@ public class QuestionnaireCampaignImplTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private QuestionnaireCampaignImpl questionnaireCampaign = new QuestionnaireCampaignImpl();
+    private PilotageCampaignImpl pilotageCampaign = new PilotageCampaignImpl();
 
     @Test
     public void givenMockingIsDoneByMockito_whenContextCreationIsCalled_shouldPostContext() throws Exception {
-        String colemanQuestionnaireUri = "https://coleman-questionnaire";
+        String colemanPilotageUri = "https://coleman-pilotage";
 
-        Field field = questionnaireCampaign.getClass().getDeclaredField("colemanQuestionnaireUri");
+        Field field = pilotageCampaign.getClass().getDeclaredField("colemanPilotageUri");
         field.setAccessible(true);
-        field.set(questionnaireCampaign, colemanQuestionnaireUri);
+        field.set(pilotageCampaign, colemanPilotageUri);
 
         String token = "token-value";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        QuestionnaireCampaignContext context = new QuestionnaireCampaignContext(
-                "id", "label", new Metadata("context", List.of()), List.of("id"));
+        PilotageCampaignContext context = new PilotageCampaignContext(
+                "id", "label", 0L, 0L);
 
         Mockito
                 .when(keycloakService.getContextReferentialToken())
                 .thenReturn(token);
 
-        questionnaireCampaign.createContext(context);
+        pilotageCampaign.createContext(context);
 
         Mockito.verify(restTemplate).exchange(
-                colemanQuestionnaireUri + "/campaigns",
+                colemanPilotageUri + "/campaigns",
                 HttpMethod.POST,
                 new HttpEntity<>(context, headers),
-                QuestionnaireCampaignContext.class);
+                PilotageCampaignContext.class);
     }
 }
 
