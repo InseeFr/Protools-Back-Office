@@ -1,4 +1,4 @@
-package com.protools.flowableDemo.services.EngineService;
+package com.protools.flowableDemo.services.engineService;
 
 
 import org.flowable.engine.*;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class WorkflowService {
@@ -33,7 +33,7 @@ public class WorkflowService {
 
     // Process execution and setBusinessKey
     @Transactional
-    public JSONObject startProcess(String ProcessKey, String BusinessKey, Map<String,Object> variables){
+    public JSONObject startProcess(String ProcessKey, String BusinessKey, HashMap<String,Object> variables){
         ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
         processInstanceBuilder.businessKey(BusinessKey).processDefinitionKey(ProcessKey).variables(variables).start();
 
@@ -57,24 +57,25 @@ public class WorkflowService {
 
     @Transactional
     public void claimTasks(String taskID, String assignee){
-        List<Task> taskInstances = taskService.createTaskQuery().taskId(taskID).taskAssignee(assignee).active().list();
-        if (taskInstances.isEmpty()) {
+        List<Task> taskInstances = taskService.createTaskQuery().taskId(taskID).list();
+        logger.info("Task List before claim: ", taskInstances.get(0));
+        if (taskInstances.size() > 0) {
             for (Task t : taskInstances) {
                 taskService.addCandidateGroup(t.getId(), "userTeam");
                 logger.info("> Claiming task: " + t.getId());
                 taskService.claim(t.getId(),assignee);
             }
         } else {
-            logger.info("\t \t >> No task found.");
+            logger.info("\t >> No task found.");
         }
     }
 
     @Transactional
-    public void completeTask(String taskID, Map<String,Object> variables, String assignee){
-        List<Task> taskInstances = taskService.createTaskQuery().taskId(taskID).taskAssignee(assignee).active().list();
+    public void completeTask(String taskID, HashMap<String,Object> variables, String assignee){
+        List<Task> taskInstances = taskService.createTaskQuery().taskId(taskID).taskAssignee(assignee).list();
         logger.info("> Completing task from process : " + taskID);
         logger.info("\t > Variables : " + variables.toString());
-        if (taskInstances.isEmpty()) {
+        if (taskInstances.size() > 0) {
             for (Task t : taskInstances) {
                 taskService.addCandidateGroup(t.getId(), "userTeam");
                 logger.info("> Completing task: " + t.getId());

@@ -1,6 +1,6 @@
 package com.protools.flowableDemo.controllers;
 
-import com.protools.flowableDemo.services.EngineService.EventInfoService;
+import com.protools.flowableDemo.services.engineService.EventInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.flowable.eventregistry.api.EventDeployment;
 import org.springframework.beans.factory.annotation.Autowired;

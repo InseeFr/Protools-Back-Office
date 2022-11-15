@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.7.2">
+  <process id="ProcessTestFeature" name="Process Test Fonctionnalités Diverses" isExecutable="true">
+    <startEvent id="Start_Process" name="Start Process" flowable:formFieldValidation="true"></startEvent>
+    <userTask id="upload_file" name="Upload Fichier" flowable:assignee="user" flowable:category="upload" flowable:formFieldValidation="true">
+      <documentation>Upload - Test Upload Fichier</documentation>
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-2E55816C-0371-41B2-9258-CCE324879A6A" sourceRef="Start_Process" targetRef="upload_file"></sequenceFlow>
+    <sequenceFlow id="sid-5530E905-82FA-486B-80F5-14879CFA9C1D" sourceRef="upload_file" targetRef="Save_context"></sequenceFlow>
+    <endEvent id="end_process" name="End Process"></endEvent>
+    <serviceTask id="Save_context" name="Enregistrement du context" flowable:delegateExpression="${saveContext}">
+      <documentation>Review - Permet de vérifier si les données du fichier ont bien été téléchargées</documentation>
+    </serviceTask>
+    <userTask id="save_context" name="Check context
+
+" flowable:formFieldValidation="true"></userTask>
+    <sequenceFlow id="sid-4173782E-C5C7-4C72-B5A0-65B3EECC70ED" sourceRef="Save_context" targetRef="save_context"></sequenceFlow>
+    <sequenceFlow id="sid-FBD23415-975C-4268-BD79-357181167D9D" sourceRef="save_context" targetRef="end_process"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ProcessTestFeature">
+    <bpmndi:BPMNPlane bpmnElement="ProcessTestFeature" id="BPMNPlane_ProcessTestFeature">
+      <bpmndi:BPMNShape bpmnElement="Start_Process" id="BPMNShape_Start_Process">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="upload_file" id="BPMNShape_upload_file">
+        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end_process" id="BPMNShape_end_process">
+        <omgdc:Bounds height="28.0" width="28.0" x="600.0" y="161.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Save_context" id="BPMNShape_Save_context">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="135.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="save_context" id="BPMNShape_save_context">
+        <omgdc:Bounds height="80.0" width="100.0" x="450.0" y="135.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-4173782E-C5C7-4C72-B5A0-65B3EECC70ED" id="BPMNEdge_sid-4173782E-C5C7-4C72-B5A0-65B3EECC70ED" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="414.9499999999527" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="449.99999999997203" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-FBD23415-975C-4268-BD79-357181167D9D" id="BPMNEdge_sid-FBD23415-975C-4268-BD79-357181167D9D" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="549.949999999996" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-2E55816C-0371-41B2-9258-CCE324879A6A" id="BPMNEdge_sid-2E55816C-0371-41B2-9258-CCE324879A6A" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="129.9499984899576" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="174.9999999999917" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-5530E905-82FA-486B-80F5-14879CFA9C1D" id="BPMNEdge_sid-5530E905-82FA-486B-80F5-14879CFA9C1D" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="274.95000000000005" y="176.92857142857142"></omgdi:waypoint>
+        <omgdi:waypoint x="314.99999999999847" y="176.07035714285715"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

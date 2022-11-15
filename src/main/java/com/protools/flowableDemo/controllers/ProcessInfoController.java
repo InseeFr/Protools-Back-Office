@@ -1,11 +1,12 @@
 package com.protools.flowableDemo.controllers;
 
-import com.protools.flowableDemo.services.EngineService.WorkflowInfoService;
+import com.protools.flowableDemo.services.engineService.WorkflowInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.flowable.bpmn.model.ExtensionElement;
 import org.flowable.bpmn.model.FlowElement;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
+import org.flowable.engine.runtime.Execution;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
@@ -114,5 +115,13 @@ public class ProcessInfoController {
     public List<String> getActivityIdExecution(@PathVariable String processInstanceId){
         List<String> result = workflowInfoService.getActivityExecution(processInstanceId);
         return result;
+    }
+
+    @CrossOrigin
+    @Operation(summary = "Get all executions")
+    @GetMapping(value = "/executions")
+    public String getAllExecutions() {
+        List<Execution> executions = workflowInfoService.getAllExecutions();
+        return String.valueOf(executions);
     }
 }

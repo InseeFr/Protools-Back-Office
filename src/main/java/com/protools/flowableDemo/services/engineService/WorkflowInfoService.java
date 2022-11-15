@@ -1,4 +1,4 @@
-package com.protools.flowableDemo.services.EngineService;
+package com.protools.flowableDemo.services.engineService;
 
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.ExtensionElement;
@@ -96,6 +96,8 @@ public class WorkflowInfoService {
             jsonResponse.put("createTime",response.get(i).getCreateTime());
             jsonResponse.put("processDefinitionID",response.get(i).getProcessDefinitionId());
             jsonResponse.put("description", response.get(i).getDescription());
+            jsonResponse.put("category",response.get(i).getCategory());
+            jsonResponse.put("assignee",response.get(i).getAssignee());
             jsonArray.put(jsonResponse);
         }
         return jsonArray;
@@ -116,6 +118,7 @@ public class WorkflowInfoService {
             jsonResponse.put("BPMN_ID", response.get(i).getExecutionId());
             jsonResponse.put("processDefinitionID",response.get(i).getProcessDefinitionId());
             jsonResponse.put("description", response.get(i).getDescription());
+            jsonResponse.put("category",response.get(i).getCategory());
             jsonArray.put(jsonResponse);
 
         }
@@ -142,6 +145,7 @@ public class WorkflowInfoService {
             jsonResponse.put("createTime",response.get(i).getCreateTime());
             jsonResponse.put("extensionID", response.get(i).getExecutionId());
             jsonResponse.put("description", response.get(i).getDescription());
+            jsonResponse.put("category",response.get(i).getCategory());
             jsonArray.put(jsonResponse);
 
         }
@@ -173,15 +177,18 @@ public class WorkflowInfoService {
     public Map<String, Object> getProcessVariables(String ProcessInstanceID){
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().includeProcessVariables().processInstanceId(ProcessInstanceID).singleResult();
         return processInstance.getProcessVariables();
-
     }
 
     @Transactional
     public List<String> getActivityExecution(String ProcessInstanceID){
         List<Execution> executions = runtimeService.createExecutionQuery().onlyChildExecutions().processInstanceId(ProcessInstanceID).list();
         return executions.stream().map(Execution::getActivityId).collect(Collectors.toList());
+    }
 
-
+    @Transactional
+    public List<Execution> getAllExecutions(){
+        List<Execution> allExecutions = runtimeService.createExecutionQuery().list();
+        return allExecutions;
     }
 
 }

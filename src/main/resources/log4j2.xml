@@ -25,13 +25,13 @@
 
     <Loggers>
         <!-- LOG everything at debug level -->
-        <Root level="debug">
+        <Root level="info">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />
         </Root>
 
         <!-- LOG "com.protools*" at debug level -->
-        <Logger name="com.protools" level="debug"></Logger>
+        <Logger name="com.protools" level="info"></Logger>
     </Loggers>
 
 </Configuration>

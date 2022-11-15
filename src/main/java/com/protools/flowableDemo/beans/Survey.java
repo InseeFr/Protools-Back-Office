@@ -68,6 +68,8 @@ public class Survey {
         this.state_survey = state;
     }
 
+    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
