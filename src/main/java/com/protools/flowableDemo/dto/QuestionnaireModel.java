@@ -21,9 +21,6 @@ public class QuestionnaireModel {
 
     private Map<?, ?> value;
 
-    public QuestionnaireModel() {
-    }
-
     public QuestionnaireModel(String id, String label, Collection<String> requiredNomenclatureIds, Map<?, ?> value) {
         this.id = id;
         this.label = label;
