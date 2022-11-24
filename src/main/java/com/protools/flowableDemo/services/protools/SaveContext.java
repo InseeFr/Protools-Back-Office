@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -30,8 +31,9 @@ public class SaveContext implements JavaDelegate {
 
         // Extraction données du timer de cloture de campagne
         // TODO : à déplacer dans une fonction dédiée
-        LinkedHashMap<Object,Object> partitionsStr = (LinkedHashMap) delegateExecution.getVariable("Partition");
         try {
+            List<Object> partitionsList = (List<Object>) delegateExecution.getVariable("Partition");
+            LinkedHashMap<Object,Object> partitionsStr = (LinkedHashMap<Object, Object>) partitionsList.get(0);
             String dateFinCampagne = getDateFinCampagne(partitionsStr);
             delegateExecution.setVariable("dateFinCampagne",dateFinCampagne);
         } catch (Exception e) {
@@ -68,13 +70,7 @@ public class SaveContext implements JavaDelegate {
                 Map<String,Object> subMap = (Map<String, Object>) entry.getValue();
                 for (Map.Entry<String,Object> subEntry : subMap.entrySet()){
                     //log.info(subEntry.getKey() + ": " + subEntry.getValue()+ " of type "+ subEntry.getValue().getClass());
-                    if (newVariables.containsKey(subEntry.getKey())){
-                        // C'est super sale, mais ça suffit pour le moment
-                        // Empiriquement c'est pas utile -> Par défaut il crée un array avec les valeurs
-                        newVariables.put(subEntry.getKey()+".1", newVariables.remove(subEntry.getKey()));
-                        newVariables.put(subEntry.getKey()+".2",subEntry.getValue());
-                    } else {
-                        newVariables.put(subEntry.getKey(),subEntry.getValue());}
+                    newVariables.put(subEntry.getKey(),subEntry.getValue());
                 }
             } else {
                 newVariables.put(entry.getKey(),entry.getValue());
