@@ -181,6 +181,7 @@ public class WorkflowInfoService {
     public Map<String, Object> getProcessVariables(String ProcessInstanceID){
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().includeProcessVariables().processInstanceId(ProcessInstanceID).singleResult();
         return processInstance.getProcessVariables();
+        //TODO: Changer l'affichage pour mieux visualiser les variables de type objet
     }
 
     @Transactional
