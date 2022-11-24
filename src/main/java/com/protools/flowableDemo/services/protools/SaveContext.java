@@ -26,7 +26,6 @@ public class SaveContext implements JavaDelegate {
         String xmlFile = (String) delegateExecution.getVariable("contextRawFile");
         JsonNode node = parseXml(xmlFile);
         Map<String,Object> result = saveContext(node);
-        log.info("Final result: " + result);
         delegateExecution.setVariables(result);
 
         // Extraction données du timer de cloture de campagne

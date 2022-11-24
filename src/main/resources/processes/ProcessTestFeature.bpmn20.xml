@@ -31,7 +31,7 @@
       <sequenceFlow id="sid-53855B54-3B58-421D-9C5B-3AA03277A8FE" sourceRef="sid-CD0DB8FD-9BD2-4262-910A-1DCD3D98FE19" targetRef="log_unit"></sequenceFlow>
       <sequenceFlow id="sid-519CC99E-8A4E-45C1-B663-FD5B508AA49B" sourceRef="log_unit" targetRef="sid-0B63B64E-481C-4AFD-9EB2-C5D6C05414C1"></sequenceFlow>
     </subProcess>
-    <serviceTask id="appel_era" name="Récupération échantillon ERA" flowable:delegateExpression="${drawDailySampleServiceTask}">
+    <serviceTask id="appel_era" name="Récupération échantillon ERA" flowable:delegateExpression="${tempGetMockEraData}">
       <documentation>Appel simple à ERA pour récupérer un échantillon à une date donnée</documentation>
     </serviceTask>
     <sequenceFlow id="sid-9B4AECDA-3932-4A34-B112-03B861408A9A" sourceRef="appel_era" targetRef="sub_process_sample"></sequenceFlow>
