@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -25,57 +26,71 @@ public class SendFollowUpMailServiceTask implements JavaDelegate {
 
         // TODO : Check niveau de partition dans Partitions ?
         JSONObject partition = (JSONObject) delegateExecution.getVariable("Partition");
-        JSONObject communications = partition.getJSONObject("Communications");
+        JSONObject communications = partition.getJSONObject("Communication");
         log.info("Communication Content :" +communications.toString());
         // TODO : Filter communication to retrieve the right comm
-        JSONObject communication = communications.getJSONObject("communication");
-        JSONObject contenuCommunicaition = communication.getJSONObject("ContenuCommunication");
+        List<JSONObject> communication = (List<JSONObject>) communications.get("Communication");
 
-        // Retrieve Campaign data
-        // This part is not mandatory, it only serves as a mark to not get lost in all those variables
-        String Enq_ServiceCollecteurSignataireFonction = (String) delegateExecution.getVariable("Enq_ServiceCollecteurSignataireFonction");
-        String Enq_ServiceCollecteurSignataireNom = (String) delegateExecution.getVariable("Enq_ServiceCollecteurSignataireNom");
-        String Enq_RespTraitement = (String) delegateExecution.getVariable("Enq_RespTraitement");
-        String Enq_RespOperationnel = (String) delegateExecution.getVariable("Enq_RespOperationnel");
-        String Enq_MailRespOperationnel = (String) delegateExecution.getVariable("Enq_MailRespOperationnel");
-        String Enq_UrlEnquete = (String) delegateExecution.getVariable("Enq_UrlEnquete");
-        String Enq_LogoPrestataire = (String) delegateExecution.getVariable("Enq_LogoPrestataire");
-        String Enq_Prestataire = (String) delegateExecution.getVariable("Enq_Prestataire");
+        //TODO : Faire moins degueu
+        JSONObject communicationRelance = null;
+        JSONObject contenuCommunication = null;
+        for (JSONObject comm: communication ){
+            if (comm.get("MoyenCommunication")== "mail" && comm.get("TypeCommunication")=="relance"){
+                communicationRelance = comm;
+                contenuCommunication = (JSONObject) comm.get("ContenuCommunication");
 
-        // Create Email request body
-        var data = new HashMap<String, Object>() {{
-            put("Ue_CalcIdentifiant", unit.get("internaute"));
-            put("Enq_ThemeMieuxConnaitreMail", contenuCommunicaition.get("ThemeMieuxConnaitreMail"));
-            put("Enq_ServiceCollecteurSignataireFonction", Enq_ServiceCollecteurSignataireFonction);
-            put("Enq_ServiceCollecteurSignataireNom", Enq_ServiceCollecteurSignataireNom);
-            put("Enq_RespTraitement", Enq_RespTraitement);
-            put("Enq_RespOperationnel",Enq_RespOperationnel);
-            put("Enq_MailRespOperationnel",Enq_MailRespOperationnel);
-            put("Enq_UrlEnquete",Enq_UrlEnquete);
-            put("Enq_LogoPrestataire",Enq_LogoPrestataire);
-            put("Enq_Prestataire",Enq_Prestataire);
-            put("Mail_Objet",communication.get("Objet"));
-            put("Mail_BoiteRetour",communication.get("BoiteRetour"));
-            put("Enq_RelanceLibreMailParagraphe1",contenuCommunicaition.get("RelanceLibreMailParagraphe1"));
-            put("Enq_RelanceLibreMailParagraphe2",contenuCommunicaition.get("RelanceLibreMailParagraphe2"));
-            put("Enq_RelanceLibreMailParagraphe3",contenuCommunicaition.get("RelanceLibreMailParagraphe3"));
-            put("Enq_RelanceLibreMailParagraphe4",contenuCommunicaition.get("RelanceLibreMailParagraphe4"));
-            put("Enq_ComplementConnexion",contenuCommunicaition.get("ComplementConnexion"));
-        }};
-        var values = new HashMap<String, Object>() {{
-            put("email", unit.get("mail"));
-            put("data", data);
+                // Retrieve Campaign data
+                // This part is not mandatory, it only serves as a mark to not get lost in all those variables
+                String Enq_ServiceCollecteurSignataireFonction = (String) delegateExecution.getVariable("Enq_ServiceCollecteurSignataireFonction");
+                String Enq_ServiceCollecteurSignataireNom = (String) delegateExecution.getVariable("Enq_ServiceCollecteurSignataireNom");
+                String Enq_RespTraitement = (String) delegateExecution.getVariable("Enq_RespTraitement");
+                String Enq_RespOperationnel = (String) delegateExecution.getVariable("Enq_RespOperationnel");
+                String Enq_MailRespOperationnel = (String) delegateExecution.getVariable("Enq_MailRespOperationnel");
+                String Enq_UrlEnquete = (String) delegateExecution.getVariable("Enq_UrlEnquete");
+                String Enq_LogoPrestataire = (String) delegateExecution.getVariable("Enq_LogoPrestataire");
+                String Enq_Prestataire = (String) delegateExecution.getVariable("Enq_Prestataire");
 
-        }};
-        var objectMapper = new ObjectMapper();
-        String requestBody = null;
-        try {
-            requestBody = objectMapper
-                    .writeValueAsString(values);
-            sendMailService.SendMail(requestBody);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+                // Create Email request body
+                JSONObject finalContenuCommunication = contenuCommunication;
+                JSONObject finalCommunicationRelance = communicationRelance;
+                var data = new HashMap<String, Object>() {{
+                    put("Ue_CalcIdentifiant", unit.get("internaute"));
+                    put("Enq_ThemeMieuxConnaitreMail", finalContenuCommunication.get("ThemeMieuxConnaitreMail"));
+                    put("Enq_ServiceCollecteurSignataireFonction", Enq_ServiceCollecteurSignataireFonction);
+                    put("Enq_ServiceCollecteurSignataireNom", Enq_ServiceCollecteurSignataireNom);
+                    put("Enq_RespTraitement", Enq_RespTraitement);
+                    put("Enq_RespOperationnel",Enq_RespOperationnel);
+                    put("Enq_MailRespOperationnel",Enq_MailRespOperationnel);
+                    put("Enq_UrlEnquete",Enq_UrlEnquete);
+                    put("Enq_LogoPrestataire",Enq_LogoPrestataire);
+                    put("Enq_Prestataire",Enq_Prestataire);
+                    put("Mail_Objet", finalCommunicationRelance.get("Objet"));
+                    put("Mail_BoiteRetour", finalCommunicationRelance.get("BoiteRetour"));
+                    put("Enq_RelanceLibreMailParagraphe1", finalContenuCommunication.get("RelanceLibreMailParagraphe1"));
+                    put("Enq_RelanceLibreMailParagraphe2", finalContenuCommunication.get("RelanceLibreMailParagraphe2"));
+                    put("Enq_RelanceLibreMailParagraphe3", finalContenuCommunication.get("RelanceLibreMailParagraphe3"));
+                    put("Enq_RelanceLibreMailParagraphe4", finalContenuCommunication.get("RelanceLibreMailParagraphe4"));
+                    put("Enq_ComplementConnexion", finalContenuCommunication.get("ComplementConnexion"));
+                }};
+                var values = new HashMap<String, Object>() {{
+                    put("email", unit.get("mail"));
+                    put("data", data);
+
+                }};
+                var objectMapper = new ObjectMapper();
+                String requestBody = null;
+                try {
+                    requestBody = objectMapper
+                            .writeValueAsString(values);
+                    sendMailService.SendMail(requestBody);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
         }
+
+
 
 
     }
