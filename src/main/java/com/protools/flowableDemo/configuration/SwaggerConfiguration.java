@@ -17,20 +17,16 @@ public class SwaggerConfiguration {
     @Autowired
     BuildProperties buildProperties;
 
-    @Value("${fr.insee.protools.server.uri}")
-    String serverUri;
 
     Contact contact = new Contact()
-        .name("Protools")
+            .name("Protools")
             .url("https://github.com/InseeFr/Protools-Back-Office");
-
 
 
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components())
-                .addServersItem(new Server().url(serverUri))
                 .info(new Info()
                         .title(buildProperties.getName())
                         .description("Back-Office Service for Protools orchestrator")

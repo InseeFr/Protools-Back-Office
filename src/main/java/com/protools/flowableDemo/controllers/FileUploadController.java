@@ -22,8 +22,6 @@ public class FileUploadController {
     private final UploadFileToEngineService uploadFileToEngineService;
 
 
-    //TODO : TO BE REMOVE
-    @Autowired DrawDailySampleServiceTask era;
     public FileUploadController(UploadFileToEngineService uploadFileToEngineService) {
         this.uploadFileToEngineService = uploadFileToEngineService;
     }
@@ -39,12 +37,4 @@ public class FileUploadController {
 
     }
 
-    //TODO : to be removed
-    @GetMapping("/toto")
-    @Operation(summary = "TOTO ")
-    public ResponseEntity<List<Map>> toto(
-          ) throws ParseException, JsonProcessingException {
-        var res = era.getSampleIDs();
-        return ResponseEntity.ok(res);
-    }
 }
