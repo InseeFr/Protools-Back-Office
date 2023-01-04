@@ -15,8 +15,8 @@ public class ApiConfigProperties {
 
         public APIProperties getAPIProperties(KNOWN_API api){
                 switch (api){
-                        case KNOWN_API_COLEMAN_PILOTAGE: return coleamnPilotageApiProperties();
-                        case KNOWN_API_COLEMAN_QUESTIONNAIRE: return coleamnQuestionnaireApiProperties();
+                        case KNOWN_API_COLEMAN_PILOTAGE: return colemanPilotageApiProperties();
+                        case KNOWN_API_COLEMAN_QUESTIONNAIRE: return colemanQuestionnaireApiProperties();
                         case KNOWN_API_ERA: return eraApiProperties();
                 }
                 return new APIProperties();
@@ -30,13 +30,13 @@ public class ApiConfigProperties {
 
         @Bean("colemanPilotageApiProperties")
         @ConfigurationProperties("fr.insee.protools.api.coleman-pilotage")
-        public APIProperties coleamnPilotageApiProperties() {
+        public APIProperties colemanPilotageApiProperties() {
                 return new APIProperties();
         }
 
         @Bean("colemanQuestionnaireApiProperties")
         @ConfigurationProperties("fr.insee.protools.api.coleman-questionnaire")
-        public APIProperties coleamnQuestionnaireApiProperties() {
+        public APIProperties colemanQuestionnaireApiProperties() {
                 return new APIProperties();
         }
 
