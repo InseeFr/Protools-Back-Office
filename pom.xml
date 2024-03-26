@@ -17,7 +17,7 @@
         <java.version>17</java.version>
         <springdoc.version>2.3.0</springdoc.version>
         <flowable.version>7.0.1-insee</flowable.version>
-        <pitest.version>1.11.7</pitest.version>
+        <pitest.version>1.15.8</pitest.version>
         <pitest.junit.version>1.1.2</pitest.junit.version>
     </properties>
 
