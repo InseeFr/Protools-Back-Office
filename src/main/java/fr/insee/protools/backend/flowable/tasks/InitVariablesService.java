@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fr.insee.protools.backend.flowable.types.ListLong;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.common.engine.api.FlowableIllegalArgumentException;
@@ -12,9 +13,6 @@ import org.flowable.common.engine.api.variable.VariableContainer;
 import org.flowable.common.engine.impl.el.ExpressionManager;
 import org.flowable.common.engine.impl.variable.MapDelegateVariableContainer;
 import org.flowable.variable.api.delegate.VariableScope;
-import org.flowable.variable.service.impl.types.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @Component
+@Slf4j
 public class InitVariablesService
         extends AbstractPlatformTask {
     private static final String VALUE_TYPE_INTEGER = "integer";
@@ -37,8 +36,6 @@ public class InitVariablesService
     private static final String VALUE_TYPE_JSON_OBJECT = "jsonObject";
     private static final String VALUE_TYPE_JSON_ARRAY = "jsonArray";
     private static final String VALUE_TYPE_LIST_LONG = "listLong";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(InitVariablesService.class);
 
     protected ObjectMapper objectMapper;
 
@@ -101,7 +98,7 @@ public class InitVariablesService
         try {
             boolean overwrite = getBooleanValue(overwriteExpression, variableScope);
             parseInitVariableMap(initVariablesMap).forEach(initVariableData -> {
-                LOGGER.debug("Processing init variable data '{}'", initVariableData);
+                log.debug("Processing init variable data '{}'", initVariableData);
 
                 String variableName = getVariableName(expressionManager, initVariableData.getTarget(), initVariableData.getVariableNameExpression(), variableScope);
 
