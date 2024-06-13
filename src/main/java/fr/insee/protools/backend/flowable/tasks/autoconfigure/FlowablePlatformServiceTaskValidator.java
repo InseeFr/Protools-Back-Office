@@ -1,7 +1,4 @@
-
 package fr.insee.protools.backend.flowable.tasks.autoconfigure;
-
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.bpmn.model.BaseElement;
@@ -9,6 +6,8 @@ import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.ServiceTask;
 import org.flowable.validation.ValidationError;
 import org.flowable.validation.validator.impl.ServiceTaskValidator;
+
+import java.util.List;
 
 
 public class FlowablePlatformServiceTaskValidator
@@ -38,7 +37,7 @@ public class FlowablePlatformServiceTaskValidator
                 case "audit":
                     return;
             }
-            addError(errors, "flowable-servicetask-invalid-type", process, (BaseElement) serviceTask, "Invalid or unsupported service task type");
+            addError(errors, "flowable-servicetask-invalid-type", process, serviceTask, "Invalid or unsupported service task type");
         }
     }
 }

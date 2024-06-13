@@ -1,20 +1,13 @@
 
 package fr.insee.protools.backend.flowable.validator;
- 
- import java.util.Arrays;
- import java.util.Collections;
- import java.util.HashSet;
- import java.util.List;
- import java.util.Set;
- import org.apache.commons.lang3.StringUtils;
- import org.flowable.bpmn.model.BaseElement;
- import org.flowable.bpmn.model.BpmnModel;
- import org.flowable.bpmn.model.ExtensionElement;
- import org.flowable.bpmn.model.FlowElement;
- import org.flowable.bpmn.model.Process;
- import org.flowable.bpmn.model.ServiceTask;
- import org.flowable.validation.ValidationError;
- import org.flowable.validation.validator.ValidatorImpl;
+
+import org.apache.commons.lang3.StringUtils;
+import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.*;
+import org.flowable.validation.ValidationError;
+import org.flowable.validation.validator.ValidatorImpl;
+
+import java.util.*;
 
 
  public class InitVariablesServiceTaskValidator

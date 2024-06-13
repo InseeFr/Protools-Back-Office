@@ -8,9 +8,7 @@ import org.flowable.common.engine.api.FlowableException;
 import org.flowable.common.engine.api.FlowableIllegalArgumentException;
 import org.flowable.common.engine.api.delegate.Expression;
 import org.flowable.common.engine.api.variable.VariableContainer;
-import org.flowable.common.engine.impl.context.Context;
 import org.flowable.common.engine.impl.el.ExpressionManager;
-import org.flowable.common.engine.impl.interceptor.CommandContext;
 import org.flowable.common.engine.impl.variable.MapDelegateVariableContainer;
 import org.flowable.variable.api.delegate.VariableScope;
 import org.slf4j.Logger;
@@ -70,11 +68,11 @@ public class InitVariablesService
                 if (isolatedVariableContainer == null) {
                     isolatedVariableContainer = new IsolatedMapDelegateVariableContainer(variableContainer);
                 }
-                processInitVariable(expressionManager, mappingInfo, (VariableContainer) isolatedVariableContainer, overwrite);
+                processInitVariable(expressionManager, mappingInfo, isolatedVariableContainer, overwrite);
             }
         }
         if (isolatedVariableContainer != null) {
-            for (Map.Entry<String, Object> variable : (Iterable<Map.Entry<String, Object>>) isolatedVariableContainer.getTransientVariables().entrySet()) {
+            for (Map.Entry<String, Object> variable : isolatedVariableContainer.getTransientVariables().entrySet()) {
                 variableContainer.setVariable(variable.getKey(), variable.getValue());
             }
         }
@@ -109,15 +107,15 @@ public class InitVariablesService
             parseInitVariableMap(initVariablesMap).forEach(initVariableData -> {
                 LOGGER.debug("Processing init variable data '{}'", initVariableData);
 
-                String variableName = getVariableName(expressionManager, initVariableData.getTarget(), initVariableData.getVariableNameExpression(), (VariableContainer) variableScope);
+                String variableName = getVariableName(expressionManager, initVariableData.getTarget(), initVariableData.getVariableNameExpression(), variableScope);
 
                 Expression variableExpression = expressionManager.createExpression(variableName);
 
-                if (overwrite || variableDoesNotExistInScope(variableExpression, (VariableContainer) variableScope)) {
+                if (overwrite || variableDoesNotExistInScope(variableExpression, variableScope)) {
                     String variableValueExpression = initVariableData.getVariableValueExpression();
 
-                    Object variableValue = StringUtils.isNotEmpty(variableValueExpression) ? expressionManager.createExpression(variableValueExpression).getValue((VariableContainer) variableScope) : null;
-                    variableExpression.setValue(variableValue, (VariableContainer) variableScope);
+                    Object variableValue = StringUtils.isNotEmpty(variableValueExpression) ? expressionManager.createExpression(variableValueExpression).getValue(variableScope) : null;
+                    variableExpression.setValue(variableValue, variableScope);
                 }
             });
         } catch (Exception e) {
@@ -130,7 +128,7 @@ public class InitVariablesService
             return false;
         }
 
-        Object value = expression.getValue((VariableContainer) variableScope);
+        Object value = expression.getValue(variableScope);
         return getBooleanValue(value);
     }
 
@@ -209,7 +207,7 @@ public class InitVariablesService
 
 
     protected String getVariableName(ExpressionManager expressionManager, String target, String name, VariableContainer variableContainer) {
-        return "${" + (String) StringUtils.defaultIfEmpty(target, "self") + "." + expressionManager
+        return "${" + StringUtils.defaultIfEmpty(target, "self") + "." + expressionManager
 
                 .createExpression(name).getValue(variableContainer) + "}";
     }
@@ -241,6 +239,8 @@ public class InitVariablesService
     protected JsonNode parseJson(String json) throws IOException {
         return this.objectMapper.readTree(json);
     }
+
+    enum MappingType {DEFAULT, ISOLATED}
 
     protected static class MappingInfo {
         BaseExtensionElement extensionElement;
@@ -283,23 +283,20 @@ public class InitVariablesService
             return getName();
         }
 
-        void setMappingType(MappingType mappingType) {
-            this.mappingType = mappingType;
-        }
-
         public MappingType getMappingType() {
             return this.mappingType;
+        }
+
+        void setMappingType(MappingType mappingType) {
+            this.mappingType = mappingType;
         }
 
 
         enum MappingType {
             DEFAULT,
-            ISOLATED;
+            ISOLATED
         }
     }
-
-    enum MappingType {DEFAULT, ISOLATED;}
-
 
     protected static class IsolatedMapDelegateVariableContainer
             extends MapDelegateVariableContainer {

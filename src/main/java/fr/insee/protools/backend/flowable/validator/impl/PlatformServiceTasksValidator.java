@@ -1,18 +1,17 @@
 /*    */
 package fr.insee.protools.backend.flowable.validator.impl;
 /*    */ 
-/*    */ import java.util.ArrayList;
-/*    */ import java.util.Collections;
-/*    */ import java.util.LinkedHashMap;
-/*    */ import java.util.List;
-/*    */ import java.util.Map;
-/*    */ import fr.insee.protools.backend.flowable.validator.PlatformServiceTaskValidator;
+/*    */
+
+import fr.insee.protools.backend.flowable.validator.PlatformServiceTaskValidator;
 import org.apache.commons.lang3.StringUtils;
-/*    */ import org.flowable.bpmn.model.BpmnModel;
-/*    */ import org.flowable.bpmn.model.Process;
-/*    */ import org.flowable.bpmn.model.ServiceTask;
-/*    */ import org.flowable.validation.ValidationError;
-/*    */ import org.flowable.validation.validator.ProcessLevelValidator;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.ServiceTask;
+import org.flowable.validation.ValidationError;
+import org.flowable.validation.validator.ProcessLevelValidator;
+
+import java.util.*;
 /*    */ 
 /*    */ 
 /*    */ 

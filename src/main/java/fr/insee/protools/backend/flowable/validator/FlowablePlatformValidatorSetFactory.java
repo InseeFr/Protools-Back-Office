@@ -1,9 +1,9 @@
 
 package fr.insee.protools.backend.flowable.validator;
- 
- import fr.insee.protools.backend.flowable.validator.impl.PlatformServiceTasksValidator;
+
+import fr.insee.protools.backend.flowable.validator.impl.PlatformServiceTasksValidator;
 import org.flowable.validation.validator.Validator;
- import org.flowable.validation.validator.ValidatorSet;
+import org.flowable.validation.validator.ValidatorSet;
 
  public class FlowablePlatformValidatorSetFactory
  {
