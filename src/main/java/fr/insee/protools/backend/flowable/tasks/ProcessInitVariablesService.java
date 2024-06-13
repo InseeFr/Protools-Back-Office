@@ -4,7 +4,6 @@ import org.flowable.common.engine.api.delegate.Expression;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 import org.flowable.engine.impl.util.CommandContextUtil;
-import org.flowable.variable.api.delegate.VariableScope;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

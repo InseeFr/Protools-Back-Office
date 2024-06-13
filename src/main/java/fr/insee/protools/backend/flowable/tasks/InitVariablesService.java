@@ -3,6 +3,7 @@ package fr.insee.protools.backend.flowable.tasks;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import fr.insee.protools.backend.flowable.types.ListLong;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.common.engine.api.FlowableIllegalArgumentException;
@@ -11,6 +12,7 @@ import org.flowable.common.engine.api.variable.VariableContainer;
 import org.flowable.common.engine.impl.el.ExpressionManager;
 import org.flowable.common.engine.impl.variable.MapDelegateVariableContainer;
 import org.flowable.variable.api.delegate.VariableScope;
+import org.flowable.variable.service.impl.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,13 +27,6 @@ import java.util.stream.Stream;
 @Component
 public class InitVariablesService
         extends AbstractPlatformTask {
-    private static final String OVERWRITE = "overwrite";
-    private static final String VARIABLE_MAPPING = "variableMapping";
-    private static final String ATTRIBUTE_TARGET = "target";
-    private static final String ATTRIBUTE_NAME = "name";
-    private static final String ATTRIBUTE_VALUE_TYPE = "valueType";
-    private static final String ATTRIBUTE_VALUE = "value";
-    private static final String ATTRIBUTE_VALUE_EXPRESSION = "valueExpression";
     private static final String VALUE_TYPE_INTEGER = "integer";
     private static final String VALUE_TYPE_LONG = "long";
     private static final String VALUE_TYPE_DOUBLE = "double";
@@ -41,6 +36,8 @@ public class InitVariablesService
     private static final String VALUE_TYPE_VARIABLE = "variable";
     private static final String VALUE_TYPE_JSON_OBJECT = "jsonObject";
     private static final String VALUE_TYPE_JSON_ARRAY = "jsonArray";
+    private static final String VALUE_TYPE_LIST_LONG = "listLong";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(InitVariablesService.class);
 
     protected ObjectMapper objectMapper;
@@ -100,7 +97,6 @@ public class InitVariablesService
     }
 
 
-    @Deprecated
     public void initVariables(ExpressionManager expressionManager, VariableScope variableScope, String initVariablesMap, Expression overwriteExpression) {
         try {
             boolean overwrite = getBooleanValue(overwriteExpression, variableScope);
@@ -166,24 +162,24 @@ public class InitVariablesService
         }
 
         switch (variableValueType) {
-            case "string":
+            case VALUE_TYPE_STRING:
                 return parseValueIfNotEmpty(variableValue, (Function) Function.identity());
-            case "integer":
+            case VALUE_TYPE_INTEGER:
                 return parseValueIfNotEmpty(variableValue, Integer::parseInt);
-            case "long":
+            case VALUE_TYPE_LONG:
                 return parseValueIfNotEmpty(variableValue, Long::parseLong);
-            case "double":
+            case  VALUE_TYPE_DOUBLE:
                 return parseValueIfNotEmpty(variableValue, Double::parseDouble);
-            case "localDate":
+            case VALUE_TYPE_LOCAL_DATE:
                 return parseValueIfNotEmpty(variableValue, this::parseLocalDate);
-            case "boolean":
+            case  VALUE_TYPE_BOOLEAN:
                 return parseValueIfNotEmpty(variableValue, Boolean::parseBoolean);
-            case "variable":
+            case  VALUE_TYPE_VARIABLE:
                 return StringUtils.isNotEmpty(variableValue) ?
                         expressionManager.createExpression("${" + variableValue + "}").getValue(variableContainer) : null;
-            case "jsonObject":
+            case  VALUE_TYPE_JSON_OBJECT:
                 return this.objectMapper.createObjectNode();
-            case "jsonArray":
+            case  VALUE_TYPE_JSON_ARRAY:
                 arrayNode = this.objectMapper.createArrayNode();
                 if (StringUtils.isNotEmpty(variableValue)) {
                     int arrayNodeSize = Integer.parseInt(variableValue);
@@ -192,6 +188,8 @@ public class InitVariablesService
                     }
                 }
                 return arrayNode;
+            case VALUE_TYPE_LIST_LONG:
+                return parseValueIfNotEmpty(variableValue, ListLong::parseListLong);
         }
         throw new FlowableIllegalArgumentException("Unknown variable value type " + variableValueType);
     }
@@ -268,19 +266,6 @@ public class InitVariablesService
 
         String getName() {
             return this.extensionElement.getAttributeValue("name").orElse(null);
-        }
-
-
-        String getVariableName() {
-            String target = getTarget();
-            if (target != null) {
-                int dotIndex = target.indexOf('.');
-                if (dotIndex > 0) {
-                    return target.substring(0, dotIndex);
-                }
-                return target;
-            }
-            return getName();
         }
 
         public MappingType getMappingType() {
