@@ -3,7 +3,6 @@ package fr.insee.protools.backend.flowable.tasks.autoconfigure;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.insee.protools.backend.flowable.tasks.InitVariablesService;
 import fr.insee.protools.backend.flowable.tasks.ProcessInitVariablesService;
-import fr.insee.protools.backend.flowable.validator.FlowablePlatformValidatorSetFactory;
 import org.flowable.validation.validator.ValidatorSet;
 import org.flowable.validation.validator.impl.ServiceTaskValidator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -36,10 +35,5 @@ public class TasksAutoConfiguration {
         return new FlowablePlatformServiceTaskValidator();
     }
 
-    @Bean
-    @ConditionalOnMissingBean(name = {"flowablePlatformValidatorSet"})
-    public ValidatorSet flowablePlatformValidatorSet() {
-        return (new FlowablePlatformValidatorSetFactory()).createFlowablePlatformValidatorSet();
-    }
 }
 
