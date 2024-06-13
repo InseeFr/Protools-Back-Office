@@ -165,18 +165,18 @@ public class InitVariablesService
                 return parseValueIfNotEmpty(variableValue, Integer::parseInt);
             case VALUE_TYPE_LONG:
                 return parseValueIfNotEmpty(variableValue, Long::parseLong);
-            case  VALUE_TYPE_DOUBLE:
+            case VALUE_TYPE_DOUBLE:
                 return parseValueIfNotEmpty(variableValue, Double::parseDouble);
             case VALUE_TYPE_LOCAL_DATE:
                 return parseValueIfNotEmpty(variableValue, this::parseLocalDate);
-            case  VALUE_TYPE_BOOLEAN:
+            case VALUE_TYPE_BOOLEAN:
                 return parseValueIfNotEmpty(variableValue, Boolean::parseBoolean);
-            case  VALUE_TYPE_VARIABLE:
+            case VALUE_TYPE_VARIABLE:
                 return StringUtils.isNotEmpty(variableValue) ?
                         expressionManager.createExpression("${" + variableValue + "}").getValue(variableContainer) : null;
-            case  VALUE_TYPE_JSON_OBJECT:
+            case VALUE_TYPE_JSON_OBJECT:
                 return this.objectMapper.createObjectNode();
-            case  VALUE_TYPE_JSON_ARRAY:
+            case VALUE_TYPE_JSON_ARRAY:
                 arrayNode = this.objectMapper.createArrayNode();
                 if (StringUtils.isNotEmpty(variableValue)) {
                     int arrayNodeSize = Integer.parseInt(variableValue);

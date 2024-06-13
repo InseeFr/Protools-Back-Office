@@ -13,6 +13,21 @@ public class ListLong implements VariableType {
 
     public static final String TYPE_NAME = "listLong";
 
+    public static List<Long> parseListLong(String s) throws NumberFormatException {
+        String val = s;
+        if (s != null) {
+            val = val.replaceAll("\\s+", "");
+            try {
+                return Arrays.stream(val.split(","))
+                        .map(Long::parseLong)
+                        .collect(Collectors.toList());
+            } catch (NumberFormatException e) {
+                throw new FlowableIllegalArgumentException("The given variable value is not comma separated list of Long: '" + s + "'", e);
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getTypeName() {
         return TYPE_NAME;
@@ -37,7 +52,6 @@ public class ListLong implements VariableType {
         return parseListLong(valStr);
     }
 
-
     @Override
     public void setValue(Object value, ValueFields valueFields) {
         try {
@@ -49,24 +63,8 @@ public class ListLong implements VariableType {
             } else {
                 valueFields.setTextValue(null);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             valueFields.setTextValue(null);
         }
-    }
-
-    public static List<Long> parseListLong(String s) throws NumberFormatException {
-        String val = s;
-        if (s != null) {
-            val=val.replaceAll("\\s+", "");
-            try {
-                return Arrays.stream(val.split(","))
-                        .map(Long::parseLong)
-                        .collect(Collectors.toList());
-            } catch (NumberFormatException e) {
-                throw new FlowableIllegalArgumentException("The given variable value is not comma separated list of Long: '" + s+ "'", e);
-            }
-        }
-        return null;
     }
 }

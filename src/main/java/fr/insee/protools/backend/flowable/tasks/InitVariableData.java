@@ -3,17 +3,15 @@ package fr.insee.protools.backend.flowable.tasks;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.style.ToStringCreator;
 
 @ToString
 class InitVariableData {
-    protected String target;
-    protected String variableNameExpression;
-    protected String variableValueExpression;
-
     protected static final String ATTRIBUTE_TARGET = "target";
     protected static final String ATTRIBUTE_NAME = "name";
     protected static final String ATTRIBUTE_VALUE = "value";
+    protected String target;
+    protected String variableNameExpression;
+    protected String variableValueExpression;
 
     public InitVariableData(String target, String variableNameExpression, String variableValueExpression) {
         this.target = target;

@@ -18,12 +18,12 @@ public class ProtoolsFlowableProcessEnfineConfiguration {
     @PostConstruct
     public void ProtoolsProcessEngineConfiguration() {
         ProcessEngineConfiguration configuration = processEngine.getProcessEngineConfiguration();
-       if (configuration instanceof ProcessEngineConfigurationImpl && ((ProcessEngineConfigurationImpl)configuration).getExpressionManager() instanceof  DefaultExpressionManager) {
-           ProcessEngineConfigurationImpl configurationImpl = (ProcessEngineConfigurationImpl)configuration;
-           ExpressionManager expressionManager = configurationImpl.getExpressionManager();
-           if(expressionManager instanceof  DefaultExpressionManager){
-               ((DefaultExpressionManager)expressionManager).addPreDefaultResolver(new HierarchyVariableELResolver());
-           }
-       }
+        if (configuration instanceof ProcessEngineConfigurationImpl && ((ProcessEngineConfigurationImpl) configuration).getExpressionManager() instanceof DefaultExpressionManager) {
+            ProcessEngineConfigurationImpl configurationImpl = (ProcessEngineConfigurationImpl) configuration;
+            ExpressionManager expressionManager = configurationImpl.getExpressionManager();
+            if (expressionManager instanceof DefaultExpressionManager) {
+                ((DefaultExpressionManager) expressionManager).addPreDefaultResolver(new HierarchyVariableELResolver());
+            }
+        }
     }
 }
