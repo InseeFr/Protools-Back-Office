@@ -1,8 +1,11 @@
-package fr.insee.protools.backend.flowable.tasks;
+package fr.insee.protools.backend.flowable.tasks.initvariables;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import fr.insee.protools.backend.flowable.tasks.AbstractPlatformTask;
+import fr.insee.protools.backend.flowable.tasks.bpmn.BaseExtensionElement;
+import fr.insee.protools.backend.flowable.tasks.bpmn.ExtensionElementsContainer;
 import fr.insee.protools.backend.flowable.types.ListLong;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

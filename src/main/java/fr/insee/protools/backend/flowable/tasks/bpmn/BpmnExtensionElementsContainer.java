@@ -1,8 +1,6 @@
 package fr.insee.protools.backend.flowable.tasks.bpmn;
 
 
-import fr.insee.protools.backend.flowable.tasks.BaseExtensionElement;
-import fr.insee.protools.backend.flowable.tasks.ExtensionElementsContainer;
 import org.flowable.bpmn.model.BaseElement;
 
 import java.util.Collections;

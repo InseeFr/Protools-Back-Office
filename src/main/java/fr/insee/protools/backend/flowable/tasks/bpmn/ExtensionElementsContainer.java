@@ -1,4 +1,4 @@
-package fr.insee.protools.backend.flowable.tasks;
+package fr.insee.protools.backend.flowable.tasks.bpmn;
 
 import java.util.Optional;
 import java.util.stream.Stream;

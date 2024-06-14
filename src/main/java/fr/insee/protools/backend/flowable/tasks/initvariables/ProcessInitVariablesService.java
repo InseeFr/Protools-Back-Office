@@ -1,4 +1,4 @@
-package fr.insee.protools.backend.flowable.tasks;
+package fr.insee.protools.backend.flowable.tasks.initvariables;
 
 import org.flowable.common.engine.api.delegate.Expression;
 import org.flowable.engine.delegate.DelegateExecution;

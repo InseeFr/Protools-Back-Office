@@ -1,6 +1,5 @@
 package fr.insee.protools.backend.flowable.tasks.bpmn;
 
-import fr.insee.protools.backend.flowable.tasks.BaseExtensionAttribute;
 import org.flowable.bpmn.model.ExtensionAttribute;
 
 

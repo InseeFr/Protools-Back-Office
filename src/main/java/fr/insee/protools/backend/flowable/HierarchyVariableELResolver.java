@@ -18,10 +18,7 @@ public class HierarchyVariableELResolver
     public static final String ROOT_TOKEN = "root";
     public static final String PARENT_TOKEN = "parent";
     public static final String SELF_TOKEN = "self";
-    public static final String ROOT_CASE_TOKEN = "case";
-    public static final String PARENT_CASE_TOKEN = "parentCase";
-    public static final String ROOT_PROCESS_TOKEN = "process";
-    public static final String PARENT_PROCESS_TOKEN = "parentProcess";
+    public static final String BPMN_TOKEN = "bpmn";
 
     public Object getValue(ELContext context, Object base, Object property) {
         if (base == null) {
@@ -29,13 +26,10 @@ public class HierarchyVariableELResolver
             if (resolvedVariableContainer != null) {
                 return resolvedVariableContainer;
             }
-
             return super.getValue(context, base, property);
         }
 
-
         if (base instanceof VariableContainer) {
-
             Object resolvedVariableContainer = resolveVariableContainer(base, context, property);
             if (resolvedVariableContainer != null) {
                 return resolvedVariableContainer;
@@ -47,13 +41,12 @@ public class HierarchyVariableELResolver
                 return ((VariableContainer) base).getVariable(variable);
             }
         }
-
         return null;
     }
 
 
     public void setValue(ELContext context, Object base, Object property, Object value) {
-        if (base == null) {
+        if (base == null && property instanceof  String) {
             String variable = (String) property;
             VariableContainer variableContainer = getVariableContainer(context);
             if (variableContainer.hasVariable(variable)) {
@@ -61,7 +54,7 @@ public class HierarchyVariableELResolver
                 variableContainer.setVariable(variable, value);
             }
 
-        } else if (base instanceof VariableContainer) {
+        } else if (base instanceof VariableContainer && property instanceof  String) {
             String variable = (String) property;
             VariableContainer baseVariableContainer = (VariableContainer) base;
             if (baseVariableContainer.hasVariable(variable)) {
@@ -77,20 +70,20 @@ public class HierarchyVariableELResolver
     }
 
     protected Object resolveVariableContainer(Object possibleVariableContainer, ELContext context, Object property) {
-        if ("root".equals(property)) {
+        if (ROOT_TOKEN.equals(property)) {
             if (possibleVariableContainer instanceof ExecutionEntity) {
                 ExecutionEntity executionVariableContainer = (ExecutionEntity) possibleVariableContainer;
                 context.setPropertyResolved(true);
                 return resolveRoot(executionVariableContainer);
             }
 
-        } else if ("parent".equals(property)) {
+        } else if (PARENT_TOKEN.equals(property)) {
             if (possibleVariableContainer instanceof ExecutionEntity) {
                 ExecutionEntity executionVariableContainer = (ExecutionEntity) possibleVariableContainer;
                 context.setPropertyResolved(true);
                 return resolveParent(executionVariableContainer);
             }
-        } else if ("self".equals(property)) {
+        } else if (SELF_TOKEN.equals(property)) {
             if (possibleVariableContainer instanceof ExecutionEntity) {
                 context.setPropertyResolved(true);
                 ExecutionEntity executionEntity = (ExecutionEntity) possibleVariableContainer;
@@ -114,8 +107,8 @@ public class HierarchyVariableELResolver
 
         if (entityLinks != null) {
             for (EntityLink entityLink : entityLinks) {
-                if ("root".equals(entityLink.getHierarchyType())) {
-                    if ("bpmn".equals(entityLink.getScopeType())) {
+                if (ROOT_TOKEN.equals(entityLink.getHierarchyType())) {
+                    if (BPMN_TOKEN.equals(entityLink.getScopeType())) {
                         return (VariableContainer) getProcessInstance(entityLink.getScopeId());
                     }
                 }
@@ -127,35 +120,30 @@ public class HierarchyVariableELResolver
 
     protected VariableContainer resolveParent(ExecutionEntity variableContainer) {
         EntityLinkService entityLinkService = getEntityLinkService(getProcessEngineConfiguration());
-        List<EntityLink> entityLinks = entityLinkService.findEntityLinksByReferenceScopeIdAndType(variableContainer.getProcessInstanceId(), "bpmn", "child");
-
+        List<EntityLink> entityLinks = entityLinkService.findEntityLinksByReferenceScopeIdAndType(variableContainer.getProcessInstanceId(), BPMN_TOKEN, "child");
+        entityLinks=entityLinks.stream().filter(entityLink -> BPMN_TOKEN.equals(entityLink.getScopeType())).toList();
 
         if (entityLinks != null) {
             EntityLink candidateLink = null;
             for (EntityLink entityLink : entityLinks) {
-                if ("parent".equals(entityLink.getHierarchyType())) {
-                    if ("bpmn".equals(entityLink.getScopeType()))
-                        return (VariableContainer) getProcessInstance(entityLink.getScopeId());
-                    continue;
+                if (PARENT_TOKEN.equals(entityLink.getHierarchyType())) {
+                    return getProcessInstance(entityLink.getScopeId());
                 }
-                if ("root".equals(entityLink.getHierarchyType())) {
+                if (ROOT_TOKEN.equals(entityLink.getHierarchyType())) {
                     candidateLink = entityLink;
                 }
             }
-
             if (candidateLink != null) {
-                if ("bpmn".equals(candidateLink.getScopeType())) {
-                    return (VariableContainer) getProcessInstance(candidateLink.getScopeId());
-                }
+                return getProcessInstance(candidateLink.getScopeId());
             }
         }
 
-        return (VariableContainer) variableContainer.getProcessInstance();
+        return variableContainer.getProcessInstance();
     }
 
 
     protected ExecutionEntity getProcessInstance(String processInstanceId) {
-        ExecutionEntity executionEntity = (ExecutionEntity) getProcessEngineConfiguration().getExecutionEntityManager().findById(processInstanceId);
+        ExecutionEntity executionEntity = getProcessEngineConfiguration().getExecutionEntityManager().findById(processInstanceId);
         if (executionEntity == null || !executionEntity.isProcessInstanceType()) {
             throw new FlowableIllegalArgumentException("Unable to resolve process instance with id " + processInstanceId);
         }

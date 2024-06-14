@@ -1,6 +1,8 @@
 package fr.insee.protools.backend.flowable.tasks;
 
+import fr.insee.protools.backend.flowable.tasks.bpmn.BaseExtensionElement;
 import fr.insee.protools.backend.flowable.tasks.bpmn.BpmnExtensionElementsContainer;
+import fr.insee.protools.backend.flowable.tasks.bpmn.ExtensionElementsContainer;
 import org.flowable.common.engine.api.delegate.Expression;
 import org.flowable.common.engine.api.variable.VariableContainer;
 import org.flowable.common.engine.impl.el.ExpressionManager;

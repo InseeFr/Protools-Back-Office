@@ -1,4 +1,4 @@
-package fr.insee.protools.backend.flowable.tasks;
+package fr.insee.protools.backend.flowable.tasks.initvariables;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.ToString;
