@@ -1,6 +1,8 @@
-package fr.insee.protools.backend.flowable.tasks.autoconfigure;
+package fr.insee.protools.backend.flowable.tasks;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.insee.protools.backend.flowable.tasks.autoconfigure.ServiceRegistryTaskProperties;
 import fr.insee.protools.backend.flowable.tasks.initvariables.InitVariablesService;
 import fr.insee.protools.backend.flowable.tasks.initvariables.ProcessInitVariablesService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -18,12 +20,11 @@ public class TasksAutoConfiguration {
         return new ProcessInitVariablesService();
     }
 
+
     @Bean
     @ConditionalOnMissingBean({InitVariablesService.class})
     public InitVariablesService initVariablesService(ObjectMapper objectMapper) {
         return new InitVariablesService(objectMapper);
     }
 
-
 }
-
