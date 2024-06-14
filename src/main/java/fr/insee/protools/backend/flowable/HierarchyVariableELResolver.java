@@ -70,40 +70,45 @@ public class HierarchyVariableELResolver
     }
 
     protected Object resolveVariableContainer(Object possibleVariableContainer, ELContext context, Object property) {
-        if (ROOT_TOKEN.equals(property)) {
-            if (possibleVariableContainer instanceof ExecutionEntity) {
-                ExecutionEntity executionVariableContainer = (ExecutionEntity) possibleVariableContainer;
-                context.setPropertyResolved(true);
-                return resolveRoot(executionVariableContainer);
-            }
 
-        } else if (PARENT_TOKEN.equals(property)) {
-            if (possibleVariableContainer instanceof ExecutionEntity) {
-                ExecutionEntity executionVariableContainer = (ExecutionEntity) possibleVariableContainer;
-                context.setPropertyResolved(true);
-                return resolveParent(executionVariableContainer);
-            }
-        } else if (SELF_TOKEN.equals(property)) {
-            if (possibleVariableContainer instanceof ExecutionEntity) {
-                context.setPropertyResolved(true);
-                ExecutionEntity executionEntity = (ExecutionEntity) possibleVariableContainer;
-                if (!executionEntity.isProcessInstanceType()) {
-                    return executionEntity.getProcessInstance();
-                }
-                return executionEntity;
-            }
-            context.setPropertyResolved(true);
-            return getVariableContainer(context);
+        if(! (property instanceof String)) {
+            return null;
         }
-
-
-        return null;
+        switch ((String)property){
+            case ROOT_TOKEN:{
+                if (possibleVariableContainer instanceof ExecutionEntity) {
+                    ExecutionEntity executionEntity = (ExecutionEntity) possibleVariableContainer;
+                    context.setPropertyResolved(true);
+                    return resolveRoot(executionEntity);
+                }
+            }
+            case PARENT_TOKEN:{
+                if (possibleVariableContainer instanceof ExecutionEntity) {
+                    ExecutionEntity executionEntity = (ExecutionEntity) possibleVariableContainer;
+                    context.setPropertyResolved(true);
+                    return resolveParent(executionEntity);
+                }
+            }
+            case SELF_TOKEN:{
+                if (possibleVariableContainer instanceof ExecutionEntity) {
+                    context.setPropertyResolved(true);
+                    ExecutionEntity executionEntity = (ExecutionEntity) possibleVariableContainer;
+                    if (!executionEntity.isProcessInstanceType()) {
+                        return executionEntity.getProcessInstance();
+                    }
+                    return executionEntity;
+                }
+                context.setPropertyResolved(true);
+                return getVariableContainer(context);
+            }
+            default:
+                return null;
+        }
     }
 
     protected VariableContainer resolveRoot(ExecutionEntity variableContainer) {
         EntityLinkService entityLinkService = getEntityLinkService(getProcessEngineConfiguration());
         List<EntityLink> entityLinks = entityLinkService.findEntityLinksByReferenceScopeIdAndType(variableContainer.getProcessInstanceId(), "bpmn", "child");
-
 
         if (entityLinks != null) {
             for (EntityLink entityLink : entityLinks) {
