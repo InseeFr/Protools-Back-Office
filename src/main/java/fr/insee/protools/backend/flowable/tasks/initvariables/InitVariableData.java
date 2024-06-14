@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
+import static fr.insee.protools.backend.flowable.tasks.initvariables.InitVariablesConstants.*;
+
 @ToString
 @Getter
 class InitVariableData {
