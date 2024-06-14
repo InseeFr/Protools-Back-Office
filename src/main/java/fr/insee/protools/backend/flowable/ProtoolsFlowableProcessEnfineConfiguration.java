@@ -15,6 +15,9 @@ public class ProtoolsFlowableProcessEnfineConfiguration {
 
     private final ProcessEngine processEngine;
 
+    /**
+     * Add custom ElResolver HierarchyVariableELResolver
+     */
     @PostConstruct
     public void ProtoolsProcessEngineConfiguration() {
         ProcessEngineConfiguration configuration = processEngine.getProcessEngineConfiguration();

@@ -109,13 +109,13 @@ public class HierarchyVariableELResolver
             for (EntityLink entityLink : entityLinks) {
                 if (ROOT_TOKEN.equals(entityLink.getHierarchyType())) {
                     if (BPMN_TOKEN.equals(entityLink.getScopeType())) {
-                        return (VariableContainer) getProcessInstance(entityLink.getScopeId());
+                        return getProcessInstance(entityLink.getScopeId());
                     }
                 }
             }
         }
 
-        return (VariableContainer) variableContainer.getProcessInstance();
+        return variableContainer.getProcessInstance();
     }
 
     protected VariableContainer resolveParent(ExecutionEntity variableContainer) {

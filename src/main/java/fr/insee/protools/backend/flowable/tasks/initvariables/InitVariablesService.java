@@ -3,6 +3,7 @@ package fr.insee.protools.backend.flowable.tasks.initvariables;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import fr.insee.protools.backend.flowable.HierarchyVariableELResolver;
 import fr.insee.protools.backend.flowable.tasks.AbstractPlatformTask;
 import fr.insee.protools.backend.flowable.tasks.bpmn.BaseExtensionElement;
 import fr.insee.protools.backend.flowable.tasks.bpmn.ExtensionElementsContainer;
@@ -25,10 +26,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static fr.insee.protools.backend.flowable.tasks.initvariables.InitVariablesConstants.*;
+
 @Component
 @Slf4j
 public class InitVariablesService
         extends AbstractPlatformTask {
+
     private static final String VALUE_TYPE_INTEGER = "integer";
     private static final String VALUE_TYPE_LONG = "long";
     private static final String VALUE_TYPE_DOUBLE = "double";
@@ -48,10 +52,10 @@ public class InitVariablesService
 
 
     public void executeTask(VariableContainer variableContainer, ExtensionElementsContainer extensionElementsContainer) {
-        Object booleanValue = getExtensionElementValue("overwrite", extensionElementsContainer, variableContainer, null);
+        Object booleanValue = getExtensionElementValue(VALUE_OVERWRITE, extensionElementsContainer, variableContainer, null);
         boolean overwrite = getBooleanValue(booleanValue);
 
-        Stream<MappingInfo> variableMapping = extensionElementsContainer.getExtensionElements("variableMapping").map(extensionElement -> toMappingInfo(extensionElement));
+        Stream<MappingInfo> variableMapping = extensionElementsContainer.getExtensionElements(VARIABLE_MAPPING).map(extensionElement -> toMappingInfo(extensionElement));
         ExpressionManager expressionManager = getExpressionManager(variableContainer);
         IsolatedMapDelegateVariableContainer isolatedVariableContainer = null;
         Iterator<MappingInfo> iterator = variableMapping.iterator();
@@ -83,7 +87,7 @@ public class InitVariablesService
 
 
     protected void processInitVariable(ExpressionManager expressionManager, MappingInfo mappingInfo, VariableContainer variableContainer, boolean overwrite) {
-        String target = (mappingInfo.getTarget() != null) ? mappingInfo.getTarget() : "self";
+        String target = (mappingInfo.getTarget() != null) ? mappingInfo.getTarget() : HierarchyVariableELResolver.SELF_TOKEN;
         String name = mappingInfo.getName();
         String variableName = getVariableName(expressionManager, target, name, variableContainer);
         Expression variableExpression = expressionManager.createExpression(variableName);
@@ -205,19 +209,19 @@ public class InitVariablesService
 
 
     protected String getVariableName(ExpressionManager expressionManager, String target, String name, VariableContainer variableContainer) {
-        return "${" + StringUtils.defaultIfEmpty(target, "self") + "." + expressionManager
+        return "${" + StringUtils.defaultIfEmpty(target, HierarchyVariableELResolver.SELF_TOKEN) + "." + expressionManager
 
                 .createExpression(name).getValue(variableContainer) + "}";
     }
 
 
     protected List<InitVariableData> parseInitVariableMap(String variableMapString) throws IOException {
-        InitVariableData defaultValues = new InitVariableData("self", null, null);
+        InitVariableData defaultValues = new InitVariableData(HierarchyVariableELResolver.SELF_TOKEN, null, null);
         List<InitVariableData> initVariablesList = new ArrayList<>();
 
         if (StringUtils.isNotEmpty(variableMapString)) {
             JsonNode expressionNode = parseJson(variableMapString);
-            JsonNode variableItems = expressionNode.get("items");
+            JsonNode variableItems = expressionNode.get(VARIABLE_ITEMS);
             if (variableItems != null) {
                 for (JsonNode variableItem : variableItems) {
                     InitVariableData initVariableData = new InitVariableData(variableItem, defaultValues);
@@ -249,23 +253,23 @@ public class InitVariablesService
         }
 
         String getValueType() {
-            return this.extensionElement.getAttributeValue("valueType").orElse(null);
+            return this.extensionElement.getAttributeValue(ATTRIBUTE_VALUE_TYPE).orElse(null);
         }
 
         String getValue() {
-            return this.extensionElement.getAttributeValue("value").orElse(null);
+            return this.extensionElement.getAttributeValue(ATTRIBUTE_VALUE).orElse(null);
         }
 
         String getValueExpression() {
-            return this.extensionElement.getAttributeValue("valueExpression").orElse(null);
+            return this.extensionElement.getAttributeValue(ATTRIBUTE_VALUE_EXPRESSION).orElse(null);
         }
 
         String getTarget() {
-            return this.extensionElement.getAttributeValue("target").orElse(null);
+            return this.extensionElement.getAttributeValue(ATTRIBUTE_TARGET).orElse(null);
         }
 
         String getName() {
-            return this.extensionElement.getAttributeValue("name").orElse(null);
+            return this.extensionElement.getAttributeValue(ATTRIBUTE_NAME).orElse(null);
         }
 
         public MappingType getMappingType() {

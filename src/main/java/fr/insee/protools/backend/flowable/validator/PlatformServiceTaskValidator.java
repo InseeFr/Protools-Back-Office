@@ -9,6 +9,5 @@ import java.util.List;
 
 public interface PlatformServiceTaskValidator {
     String getDelegateExpression();
-
     void validate(BpmnModel paramBpmnModel, Process paramProcess, ServiceTask paramServiceTask, List<ValidationError> paramList);
 }

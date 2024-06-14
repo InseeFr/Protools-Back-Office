@@ -1,5 +1,6 @@
-package fr.insee.protools.backend.flowable.validator;
+package fr.insee.protools.backend.flowable.tasks.initvariables.validator;
 
+import fr.insee.protools.backend.flowable.validator.PlatformServiceTaskValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.*;
@@ -8,21 +9,12 @@ import org.flowable.validation.validator.ValidatorImpl;
 
 import java.util.*;
 
+import static fr.insee.protools.backend.flowable.tasks.initvariables.InitVariablesConstants.*;
+
 
 public class InitVariablesServiceTaskValidator
         extends ValidatorImpl
         implements PlatformServiceTaskValidator {
-    private static final String DELEGATE_EXPRESSION = "${initVariablesService}";
-    private static final String VARIABLE_MAPPING = "variableMapping";
-    private static final String ATTRIBUTE_TARGET = "target";
-    private static final String ATTRIBUTE_NAME = "name";
-    private static final String ATTRIBUTE_VALUE = "value";
-    private static final String ATTRIBUTE_VALUE_EXPRESSION = "valueExpression";
-    private static final String ATTRIBUTE_VALUE_TYPE = "valueType";
-    private static final String VALUE_TYPE_JSON_OBJECT = "jsonObject";
-    private static final String VALUE_TYPE_JSON_ARRAY = "jsonArray";
-    private static final Set<String> KNOWN_VALUE_TYPES = new HashSet<>(
-            Arrays.asList(new String[]{"integer", "long", "double", "localDate", "string", "boolean", "variable", "jsonObject", "jsonArray"}));
 
     public void validate(BpmnModel bpmnModel, List<ValidationError> list) {
         throw new UnsupportedOperationException("This validator can only be used as a " + PlatformServiceTaskValidator.class);
@@ -30,12 +22,12 @@ public class InitVariablesServiceTaskValidator
 
 
     public String getDelegateExpression() {
-        return "${initVariablesService}";
+        return DELEGATE_EXPRESSION;
     }
 
 
     public void validate(BpmnModel bpmnModel, Process process, ServiceTask serviceTask, List<ValidationError> errors) {
-        List<ExtensionElement> variableMappings = (List<ExtensionElement>) serviceTask.getExtensionElements().getOrDefault("variableMapping", Collections.emptyList());
+        List<ExtensionElement> variableMappings = (List<ExtensionElement>) serviceTask.getExtensionElements().getOrDefault(VARIABLE_MAPPING, Collections.emptyList());
         if (variableMappings.isEmpty()) {
             addWarning(errors, "init-variables-no-variable-mappings", process, (BaseElement) serviceTask, "There are no defined variable mappings");
         } else {
@@ -54,7 +46,7 @@ public class InitVariablesServiceTaskValidator
         }
 
 
-        String valueType = variableMapping.getAttributeValue(null, "valueType");
+        String valueType = variableMapping.getAttributeValue(null, ATTRIBUTE_VALUE_TYPE);
         if (StringUtils.isNotEmpty(valueType) && !KNOWN_VALUE_TYPES.contains(valueType)) {
             addWarning(errors, "init-variables-unknown-value-type", process, (FlowElement) serviceTask, (BaseElement) variableMapping, "Unknown value type");
         }
