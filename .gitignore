@@ -51,3 +51,4 @@ glowroot.jar
 /secrets/postgres_password.txt
 /secrets/secrets_protools_properties.properties
 /secrets/**
+/src/main/resources/processes/
