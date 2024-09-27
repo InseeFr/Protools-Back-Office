@@ -22,6 +22,8 @@
         <pitest.junit.version>1.2.1</pitest.junit.version>
         <passay.version>1.6.4</passay.version>
         <groovy-version>4.0.21</groovy-version>
+        <json-schema-validator.version>1.5.1</json-schema-validator.version>
+        <micrometer-core.version>1.12.3</micrometer-core.version>
     </properties>
 
 
@@ -136,7 +138,7 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-            <version>1.12.3</version>
+            <version>${micrometer-core.version}</version>
         </dependency>
 
         <dependency>
@@ -147,7 +149,7 @@
         <dependency>
             <groupId>com.networknt</groupId>
             <artifactId>json-schema-validator</artifactId>
-            <version>1.5.1</version>
+            <version>${json-schema-validator.version}</version>
         </dependency>
 
         <!-- to create Instant from json -->
