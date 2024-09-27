@@ -1,6 +1,5 @@
 package fr.insee.protools.backend.restclient.keycloak;
 
-import fr.insee.protools.backend.configuration.testcoverage.ExcludeFromJacocoGeneratedReport;
 import fr.insee.protools.backend.restclient.configuration.APIProperties;
 import fr.insee.protools.backend.restclient.exception.KeycloakTokenConfigBPMNError;
 import io.netty.handler.logging.LogLevel;
@@ -119,7 +118,7 @@ public class KeycloakService {
         }
     }
 
-    @ExcludeFromJacocoGeneratedReport
+//    @ExcludeFromJacocoGeneratedReport
     private void logToken(Token token){
         if(log.isTraceEnabled()){
             var currentDt = Instant.now().toEpochMilli();

@@ -22,8 +22,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SpringDocConfiguration {
 
-  private InseeSpringdocProperties springdocProperties;
-  private Optional<BuildProperties> buildProperties;
+  private final InseeSpringdocProperties springdocProperties;
+  private final Optional<BuildProperties> buildProperties;
 
 
   public static final String OAUTHSCHEME = "oAuth";

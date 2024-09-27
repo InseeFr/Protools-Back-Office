@@ -1,7 +1,7 @@
 ### GET TOKEN --- SET HOST
 < {%
     client.global.set("host", "https://api-orchestration-protocole-enquete.developpement.insee.fr/");
-    client.global.set("host", "http://localhost:8080/");
+    // client.global.set("host", "http://localhost:8080/");
 %}
 POST https://auth.insee.test/auth/realms/{{realm}}/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
