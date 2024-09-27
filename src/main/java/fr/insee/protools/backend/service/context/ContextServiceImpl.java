@@ -217,6 +217,8 @@ public class ContextServiceImpl implements IContextService {
      * @throws FlowableObjectNotFoundException if no process definition (BPMN) matches processDefinitionKey
      */
     public Set<String> isContextOKForBPMN(String processDefinitionKey, ContexteProcessus contexteProcessus) {
+        //TODO: verify also that delegates exists
+
         //At least, the campaign ID should be defined so we can write it on process variables to be used un groovy scripts
         Set<String> errors = new HashSet<>();
         if(contexteProcessus.getId()==null){
