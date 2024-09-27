@@ -7,6 +7,7 @@ import fr.insee.protools.backend.service.rem.IRemService;
 import fr.insee.protools.backend.service.utils.FlowableVariableUtils;
 import fr.insee.protools.backend.service.utils.delegate.PaginationHelper;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
@@ -22,9 +23,10 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.*;
 @Slf4j
 @Component
 @Data
+@RequiredArgsConstructor
 public class RemGetPartitionListOfInterroPaginatedTask implements JavaDelegate, DelegateContextVerifier, PaginationHelper {
 
-    IRemService remService;
+    private final IRemService remService;
 
     private PageResponse readFunction(Integer pageToRead, Object... objects) {
         String partitionId = (String) objects[0];
