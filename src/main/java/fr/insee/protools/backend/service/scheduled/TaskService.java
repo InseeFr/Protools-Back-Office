@@ -2,10 +2,14 @@ package fr.insee.protools.backend.service.scheduled;
 
 import fr.insee.protools.backend.repository.IUniteEnquetee;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@ConditionalOnProperty(
+        name = "spring.data.mongodb.uri"
+)
 public class TaskService {
 
   private final IUniteEnquetee iUniteEnquetee;

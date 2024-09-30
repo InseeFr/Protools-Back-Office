@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
@@ -30,6 +31,9 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
+@ConditionalOnProperty(
+		name = "spring.data.mongodb.uri"
+)
 public class UniteEnqueteeImpl implements IUniteEnquetee {
 
 	private final MongoTemplate mongoTemplate;
