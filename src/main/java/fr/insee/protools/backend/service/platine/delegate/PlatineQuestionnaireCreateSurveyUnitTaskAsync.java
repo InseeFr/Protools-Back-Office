@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,6 +24,9 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VA
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(
+        name = "spring.data.mongodb.uri"
+)
 public class PlatineQuestionnaireCreateSurveyUnitTaskAsync implements JavaDelegate, DelegateContextVerifier {
 
     private final IContextService protoolsContext;
