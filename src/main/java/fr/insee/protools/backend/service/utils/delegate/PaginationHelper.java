@@ -26,19 +26,19 @@ public interface PaginationHelper {
      * getAndTreat It will read a page using IGetFromService.
      * For this  page it will call treatPage
      * variables in the map returned by treatPage() will be added to the local variables of the execution
-     * It will update the varname_is_last_page and varname_current_page variables
+     * It will update the varnameIsLastPage and varnameCurrentPage variables
      *
      * @param execution
-     * @param varname_current_page
-     * @param varname_is_last_page
+     * @param varnameCurrentPage
+     * @param varnameIsLastPage
      * @param getService           a functional interface to be used for the read
      * @param getServiceParams     the parameters for the functional interface call
      */
-    default void getAndTreat(DelegateExecution execution, String varname_current_page, String varname_is_last_page, IGetFromService getService, Object... getServiceParams) {
+    default void getAndTreat(DelegateExecution execution, String varnameCurrentPage, String varnameIsLastPage, IGetFromService getService, Object... getServiceParams) {
         getLogger().info("ProcessInstanceId={}  begin", execution.getProcessInstanceId());
 
-        Integer currentPage = FlowableVariableUtils.getVariableOrNull(execution, varname_current_page, Integer.class);
-        Boolean isLastPage = FlowableVariableUtils.getVariableOrNull(execution, varname_is_last_page, Boolean.class);
+        Integer currentPage = FlowableVariableUtils.getVariableOrNull(execution, varnameCurrentPage, Integer.class);
+        Boolean isLastPage = FlowableVariableUtils.getVariableOrNull(execution, varnameIsLastPage, Boolean.class);
 
         Integer expectedPage;
         if (currentPage == null) {
@@ -68,8 +68,8 @@ public interface PaginationHelper {
             Map<String, Object> variables = treatPage(execution, pageResponse.getContent());
 
             //Add pagination details to the variables we are going to insert
-            variables.put(varname_current_page, expectedPage);
-            variables.put(varname_is_last_page, pageResponse.isLastPage());
+            variables.put(varnameCurrentPage, expectedPage);
+            variables.put(varnameIsLastPage, pageResponse.isLastPage());
             execution.getParent().setVariablesLocal(variables);
             getLogger().debug("ProcessInstanceId={} -  readSize={} end", execution.getProcessInstanceId(), pageResponse.getContent().size());
         }

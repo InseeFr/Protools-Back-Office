@@ -43,7 +43,7 @@ public class PartitionCtxResolver {
     private final IContextService protoolsContext;
 
     //Window during that we allow to send communcation whose date is passed
-    private final TemporalAmount maxSendCommunicationWindowHours = Duration.ofHours(12);;
+    private final TemporalAmount maxSendCommunicationWindowHours = Duration.ofHours(12);
 
     //Date in a far away future
     private static final Instant farAwayInstant = LocalDate.parse("9999-12-31").atStartOfDay(ZoneId.of("Europe/Paris")).toInstant();

@@ -18,12 +18,12 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VA
 @RequiredArgsConstructor
 public class ProtoolsFlowResolver {
 
-    public boolean isPaginationFinished(ExecutionEntity execution, String varname_current_page, String varname_is_last_page) {
-        Boolean isLastPage = FlowableVariableUtils.getVariableOrNull(execution, varname_is_last_page, Boolean.class);
+    public boolean isPaginationFinished(ExecutionEntity execution, String varnameCurrentPage, String varnameIsLastPage) {
+        Boolean isLastPage = FlowableVariableUtils.getVariableOrNull(execution, varnameIsLastPage, Boolean.class);
         if (isLastPage != null && isLastPage) {
             Collection<String> variableNames = new ArrayList<>(2);
-            variableNames.add(varname_current_page);
-            variableNames.add(varname_is_last_page);
+            variableNames.add(varnameCurrentPage);
+            variableNames.add(varnameIsLastPage);
             execution.removeVariables(variableNames);
             return true;
         }
