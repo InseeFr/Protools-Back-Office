@@ -35,7 +35,10 @@ public class MeshuggahServiceImpl implements IMeshuggahService{
         log.trace("postCommunicationRequest: campaignId={} - communicationId={}",campaignId,communicationId);
         var response = restClientHelper.getRestClient(KNOWN_API_MESHUGGAH)
                 .post()
-                .uri("/context")
+                .uri(uriBuilder -> uriBuilder
+                        .path("/communication-request")
+                        .queryParam("communication_id", communicationId)
+                        .build())
                 .body(list)
                 .retrieve()
                 .body(String.class);
