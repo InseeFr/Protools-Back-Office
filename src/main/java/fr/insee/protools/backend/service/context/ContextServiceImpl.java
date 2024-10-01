@@ -185,7 +185,7 @@ public class ContextServiceImpl implements IContextService {
 
         try {
             String content = new String(file.getBytes(), StandardCharsets.UTF_8);
-            log.debug("Context File content : " + content);
+            log.trace("Context File content : " + content);
 
             JsonNode rootContext = defaultReader.readTree(content);
             ContexteProcessus contexte = jsonReadAndSchemaValidation(rootContext);
