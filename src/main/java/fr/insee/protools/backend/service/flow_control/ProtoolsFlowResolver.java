@@ -18,15 +18,6 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VA
 @RequiredArgsConstructor
 public class ProtoolsFlowResolver {
 
-    /**
-     * Will check if the variable varname_is_last_page is set to true.
-     * If yes it will unset variables varname_is_last_page & varname_current_page and return true
-     *
-     * @param execution
-     * @param varname_current_page
-     * @param varname_is_last_page
-     * @return true if variable varname_is_last_page is true; else false
-     */
     public boolean isPaginationFinished(ExecutionEntity execution, String varname_current_page, String varname_is_last_page) {
         Boolean isLastPage = FlowableVariableUtils.getVariableOrNull(execution, varname_is_last_page, Boolean.class);
         if (isLastPage != null && isLastPage) {
@@ -39,6 +30,13 @@ public class ProtoolsFlowResolver {
         return false;
     }
 
+    /**
+     * Will check if VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE varname_is_last_page is set to true.
+     * If yes it will unset variables VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE & VARNAME_INTERRO_LIST_PAGEABLE_IS_LAST_PAGE and return true
+     *
+     * @param execution
+     * @return true if variable VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE is true; else false
+     */
     public boolean isRemPaginationFinished(ExecutionEntity execution) {
         return isPaginationFinished(execution, VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE, VARNAME_INTERRO_LIST_PAGEABLE_IS_LAST_PAGE);
     }
