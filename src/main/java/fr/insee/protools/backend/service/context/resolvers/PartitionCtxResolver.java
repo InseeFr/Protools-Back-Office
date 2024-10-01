@@ -42,8 +42,8 @@ public class PartitionCtxResolver {
 
     private final IContextService protoolsContext;
 
-    //TODO: à faire valider par le métier
-    private final TemporalAmount maxSendCommunicationWindowHours = Duration.ofHours(24);;
+    //Window during that we allow to send communcation whose date is passed
+    private final TemporalAmount maxSendCommunicationWindowHours = Duration.ofHours(12);;
 
     //Date in a far away future
     private static final Instant farAwayInstant = LocalDate.parse("9999-12-31").atStartOfDay(ZoneId.of("Europe/Paris")).toInstant();
@@ -64,9 +64,12 @@ public class PartitionCtxResolver {
 
 
     public Instant getCollectionEndDate(ExecutionEntity execution, String partitionId) {
-        return getPartition(execution,partitionId)
+        Instant partitionEndDate=getPartition(execution,partitionId)
                 .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get Collection Start date on undefined partition"))
-                .getDateDebutCollecte();
+                .getDateFinCollecte();
+        log.info("getCollectionEndDate: ProcessInstanceId={} - partitionId={} - dateFinCollecte={}",
+                execution.getProcessInstanceId(), partitionId, TimeLogUtils.format(partitionEndDate));
+        return partitionEndDate;
     }
 
     @SuppressWarnings("unused")     //used in BPMNS
@@ -84,19 +87,19 @@ public class PartitionCtxResolver {
     //TODO: documenter l'histoire des 24H
     @SuppressWarnings("unused") //Used in BPMN
     public Instant scheduleNextCommunication(ExecutionEntity execution, String partitionId) {
-
+        //TODO: logs?
         Instant now = Instant.now();
 
         //Context
         Lot partition =  getPartition(execution,partitionId)
                 .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get schedule next communication on an unknown partition : "+partitionId));
 
-        Set<String> sentCommunicationIds = FlowableVariableUtils.getVariableOrNull(execution, VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET, Set.class);
+        Set<String> scheduledCommunicationIds = FlowableVariableUtils.getVariableOrNull(execution, VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET, Set.class);
         Set<String> errorCommunicationIds = FlowableVariableUtils.getVariableOrNull(execution, VARNAME_COMMUNICATION_ERROR_ID_SET, Set.class);
 
 
-        if(sentCommunicationIds==null){
-            sentCommunicationIds=new HashSet<>();
+        if(scheduledCommunicationIds==null){
+            scheduledCommunicationIds=new HashSet<>();
         }
         if(errorCommunicationIds==null){
             errorCommunicationIds=new HashSet<>();
@@ -116,7 +119,7 @@ public class PartitionCtxResolver {
 
             //null is an error in config so we ignore it;
             // and we also discard communications that have already been sent or that have been marked as in error
-            if(communication==null || communication.getEcheance()==null || sentCommunicationIds.contains(String.valueOf(communication.getId())) || errorCommunicationIds.contains(communication.getId().toString())){
+            if(communication==null || communication.getEcheance()==null || scheduledCommunicationIds.contains(String.valueOf(communication.getId())) || errorCommunicationIds.contains(communication.getId().toString())){
                 continue;
             }
 
@@ -141,13 +144,13 @@ public class PartitionCtxResolver {
             nextCommEcheance = farAwayInstant;
         }
         else{
-            sentCommunicationIds.add(nextCommId);
+            scheduledCommunicationIds.add(nextCommId);
 
             execution.getParent().setVariableLocal(VARNAME_CURRENT_COMMUNICATION_ID,nextCommId);
-            execution.getRootProcessInstance().setVariableLocal(VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET,sentCommunicationIds);
+            execution.getRootProcessInstance().setVariableLocal(VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET,scheduledCommunicationIds);
         }
 
-        log.info("part="+partitionId+" - nextCom="+TimeLogUtils.format(nextCommEcheance));
+        log.info("scheduleNextCommunication: part="+partitionId+" - nextCom="+TimeLogUtils.format(nextCommEcheance));
         return nextCommEcheance;
     }
 
