@@ -5,7 +5,7 @@ import fr.insee.protools.backend.dto.sugoi.Habilitation;
 import fr.insee.protools.backend.dto.sugoi.User;
 import fr.insee.protools.backend.service.DelegateContextVerifier;
 import fr.insee.protools.backend.service.context.IContextService;
-import fr.insee.protools.backend.service.rem.RemServiceImpl;
+import fr.insee.protools.backend.service.rem.IRemService;
 import fr.insee.protools.backend.service.sugoi.ISugoiService;
 import fr.insee.protools.backend.service.utils.FlowableVariableUtils;
 import fr.insee.protools.backend.service.utils.password.PasswordService;
@@ -31,7 +31,7 @@ public class SugoiREMCreateMissingAccountListTask implements JavaDelegate, Deleg
     protected static final User createSugoiUserBody = User.builder().habilitations(List.of(PLATINE_HABILITATION)).build();
 
     private final ISugoiService sugoiService;
-    private final RemServiceImpl remService;
+    private final IRemService remService;
 
     private final PasswordService passwordService;
     private final IContextService protoolsContext;
@@ -41,7 +41,7 @@ public class SugoiREMCreateMissingAccountListTask implements JavaDelegate, Deleg
 
     @Override
     public void execute(DelegateExecution execution) {
-        log.debug("ProcessInstanceId={} begin", execution.getProcessInstanceId());
+        log.info("ProcessInstanceId={} begin", execution.getProcessInstanceId());
         ContexteProcessus context = protoolsContext.getContextDtoByProcessInstance(execution.getProcessInstanceId());
         checkContextOrThrow(log,execution.getProcessInstanceId(), context);
 
