@@ -44,7 +44,7 @@ public class RequestLoggingFilterConfig {
             }
         };
 
-        filter.setIncludeClientInfo(true);
+        filter.setIncludeClientInfo(false);
         filter.setIncludeQueryString(true);
         filter.setIncludePayload(true);
         filter.setMaxPayloadLength(10000);
