@@ -38,6 +38,7 @@ import java.util.*;
 public class RestClientHelper  {
     private final KeycloakService keycloakService;
     private final ApiConfigProperties apiConfigProperties;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final EnumMap<ApiConfigProperties.KNOWN_API, RestClient> initializedClients = new EnumMap<>(ApiConfigProperties.KNOWN_API.class);
 
@@ -140,7 +141,6 @@ public class RestClientHelper  {
      * @return A json with the configuration of the APIs handled by protools
      */
     public JsonNode getAPIConfigDetails(){
-        ObjectMapper objectMapper = new ObjectMapper();
         ArrayNode rootNode = objectMapper.createArrayNode();
         for (var api :ApiConfigProperties.KNOWN_API.values() ) {
             APIProperties apiProperties = apiConfigProperties.getAPIProperties(api);
@@ -160,7 +160,6 @@ public class RestClientHelper  {
         }
         Base64.Decoder decoder = Base64.getUrlDecoder();
         String payload = new String(decoder.decode(chunks[1]));
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode tokenPayloadNode = objectMapper.readTree(payload);
             JsonNode roles = tokenPayloadNode.path("realm_access").path("roles");

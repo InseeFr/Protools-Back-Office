@@ -18,11 +18,13 @@ public class LoggingHelper {
     @Target(ElementType.METHOD)
     public @interface ExcludeFromJacocoGeneratedReport {}
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     @ExcludeFromJacocoGeneratedReport
     public static void logJson(String msg, Object dto, Logger logger, Level level) {
-        if (logger.isEnabledForLevel(level)) {
+        if (logger.isEnabledForLevel(level) && msg!=null) {
             try {
-                String json = new ObjectMapper().writeValueAsString(dto);
+                String json = objectMapper.writeValueAsString(dto);
                 String logLine = msg +" - " + json;
                 switch (level) {
                     case TRACE -> logger.trace(logLine);
