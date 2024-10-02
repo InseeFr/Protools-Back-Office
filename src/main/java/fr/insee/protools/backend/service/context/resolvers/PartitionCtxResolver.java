@@ -25,31 +25,27 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.*;
 /**
  * Used to make protools context variables available in BPMN expressions
  * example:
- *
  *   <intermediateCatchEvent id="id1" name="dummy">
  *     <timerEventDefinition>
  *       <timeDate>${partitionCtxResolver.getCollectionStartDate(execution,current_partition_id)}</timeDate>
  *     </timerEventDefinition>
  *   </intermediateCatchEvent>
- *
- *
+ * <p>
  *   Flowable doc : https://documentation.flowable.com/latest/develop/be/be-expressions#customization
  */
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("unused")     //used in BPMNS
 public class PartitionCtxResolver {
-
-    private final IContextService protoolsContext;
-
-    //Window during that we allow to send communcation whose date is passed
-    private final TemporalAmount maxSendCommunicationWindowHours = Duration.ofHours(12);
 
     //Date in a far away future
     private static final Instant farAwayInstant = LocalDate.parse("9999-12-31").atStartOfDay(ZoneId.of("Europe/Paris")).toInstant();
+    private final IContextService protoolsContext;
+    //Window during that we allow to send communcation whose date is passed
+    private final TemporalAmount maxSendCommunicationWindowHours = Duration.ofHours(12);
 
-
-    private Optional<Lot> getPartition(ExecutionEntity execution, String partitionId){
+    private Optional<Lot> getPartition(ExecutionEntity execution, String partitionId) {
         var context = protoolsContext.getContextDtoByProcessInstance(execution.getProcessInstanceId());
          return context.getLots().stream()
                 .filter(x -> String.valueOf(x.getId()).equalsIgnoreCase(partitionId))
@@ -62,17 +58,12 @@ public class PartitionCtxResolver {
                 .getDateDebutCollecte();
     }
 
-
     public Instant getCollectionEndDate(ExecutionEntity execution, String partitionId) {
-        Instant partitionEndDate=getPartition(execution,partitionId)
-                .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get Collection Start date on undefined partition"))
-                .getDateFinCollecte();
-        log.info("getCollectionEndDate: ProcessInstanceId={} - partitionId={} - dateFinCollecte={}",
-                execution.getProcessInstanceId(), partitionId, TimeLogUtils.format(partitionEndDate));
+        Instant partitionEndDate = getPartition(execution, partitionId).orElseThrow(() -> new IncoherentBPMNContextError("Tried to get Collection Start date on undefined partition")).getDateFinCollecte();
+        log.info("getCollectionEndDate: ProcessInstanceId={} - partitionId={} - dateFinCollecte={}", execution.getProcessInstanceId(), partitionId, TimeLogUtils.format(partitionEndDate));
         return partitionEndDate;
     }
 
-    @SuppressWarnings("unused")     //used in BPMNS
     public String getCommunicationType(ExecutionEntity execution, String partitionId, String communicationId) {
         return getPartition(execution,partitionId)
                 .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get communication type on an unknown partition : "+partitionId))
@@ -83,74 +74,79 @@ public class PartitionCtxResolver {
                 .getTypeCommunication().toString();
     }
 
-
-    //TODO: documenter l'histoire des 24H
-    @SuppressWarnings("unused") //Used in BPMN
+    /**
+     * Considers all communications with a due date in the future, as well as those up to 12 hours in the past.
+     * <p>
+     * This allows scheduling even if two communications have identical or very close send times.
+     * It also handles cases where the process might experience slight delays.
+     * <p>
+     * If there is no communication to be sent, the returned instant is set to a distant future (year 9999).
+     * <b>It also sets the VARNAME_CURRENT_COMMUNICATION_ID process variable with the identifier of the next scheduled communication</b>.
+     *
+     * @param execution   used to retrieve the Protools context
+     * @param partitionId the current partition identifier used to retrieve the communications in the context
+     * @return an Instant that can be used to schedule a timer for the next communication to be sent
+     */
     public Instant scheduleNextCommunication(ExecutionEntity execution, String partitionId) {
-        //TODO: logs?
+        //Get the current time
         Instant now = Instant.now();
 
-        //Context
+        // Retrieve the partition or throw an error if not found
         Lot partition =  getPartition(execution,partitionId)
                 .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get schedule next communication on an unknown partition : "+partitionId));
 
         Set<String> scheduledCommunicationIds = FlowableVariableUtils.getVariableOrNull(execution, VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET, Set.class);
         Set<String> errorCommunicationIds = FlowableVariableUtils.getVariableOrNull(execution, VARNAME_COMMUNICATION_ERROR_ID_SET, Set.class);
 
-
-        if(scheduledCommunicationIds==null){
-            scheduledCommunicationIds=new HashSet<>();
+        if (scheduledCommunicationIds == null) {
+            scheduledCommunicationIds = new HashSet<>();
         }
-        if(errorCommunicationIds==null){
-            errorCommunicationIds=new HashSet<>();
+        if (errorCommunicationIds == null) {
+            errorCommunicationIds = new HashSet<>();
         }
 
-        //Collection End if after current time
-        if(partition.getDateFinCollecte().isBefore(now)){
-            log.error("ProcessInstanceId={} - partitionId={} - dateFinCollecte={} is in the past  ==> Timer is set to a far away Instant ",
+        // Check if the collection period has ended
+        if (partition.getDateFinCollecte().isBefore(now)) {
+            log.error("ProcessInstanceId={} - partitionId={} - dateFinCollecte={} is in the past, returning an instant to a far away future",
                     execution.getProcessInstanceId(), partitionId, TimeLogUtils.format(partition.getDateFinCollecte()));
             return farAwayInstant;
         }
 
         Instant nextCommEcheance = null;
-        String nextCommId=null;
+        String nextCommId = null;
 
-        for (Communication communication: partition.getCommunications()){
-
-            //null is an error in config so we ignore it;
-            // and we also discard communications that have already been sent or that have been marked as in error
-            if(communication==null || communication.getEcheance()==null || scheduledCommunicationIds.contains(String.valueOf(communication.getId())) || errorCommunicationIds.contains(communication.getId().toString())){
-                continue;
+        // Iterate through communications in the partition
+        for (Communication communication : partition.getCommunications()) {
+            if (communication == null || communication.getEcheance() == null || scheduledCommunicationIds.contains(String.valueOf(communication.getId())) || errorCommunicationIds.contains(communication.getId().toString())) {
+                continue; // Skip already processed or errored communications
             }
 
-            //verify that echeance of communication to be sent is not too old
-            if(communication.getEcheance().plus(maxSendCommunicationWindowHours).isBefore(now)){
-                log.warn("Partition id={} : Communication id={} has not been sent. Its echeance [ {} ] is too far past so it will not be sent",
-                        partitionId,communication.getId(),TimeLogUtils.format(communication.getEcheance()));
+            // Check if the communication is too far past the deadline (window)
+            if (communication.getEcheance().plus(maxSendCommunicationWindowHours).isBefore(now)) {
+                log.warn("Partition id={} : Communication id={} has expired (echeance: {}), marking it as error", partitionId, communication.getId(), TimeLogUtils.format(communication.getEcheance()));
 
+                // Add communication to the error set and update the process variable
                 errorCommunicationIds.add(String.valueOf(communication.getId()));
-                execution.getRootProcessInstance().setVariableLocal(VARNAME_COMMUNICATION_ERROR_ID_SET,errorCommunicationIds);
+                execution.getRootProcessInstance().setVariableLocal(VARNAME_COMMUNICATION_ERROR_ID_SET, errorCommunicationIds);
             }
 
-            //Among the not treated communications we compute the one with the first echeance
-            else if(nextCommEcheance == null || nextCommEcheance.isAfter(communication.getEcheance())){
-                nextCommEcheance=communication.getEcheance();
-                nextCommId=String.valueOf(communication.getId());
+            // Find the communication with the earliest echeance
+            else if (nextCommEcheance == null || nextCommEcheance.isAfter(communication.getEcheance())) {
+                nextCommEcheance = communication.getEcheance();
+                nextCommId = String.valueOf(communication.getId());
             }
         }
 
-        //If no communication left (all have already been treated) ==> far away future
-        if(nextCommId==null){
+        // If no communication is found, set to a far future instant
+        if (nextCommId == null) {
             nextCommEcheance = farAwayInstant;
-        }
-        else{
+        } else {
+            // Schedule the next communication and update process variables
             scheduledCommunicationIds.add(nextCommId);
-
-            execution.getParent().setVariableLocal(VARNAME_CURRENT_COMMUNICATION_ID,nextCommId);
-            execution.getRootProcessInstance().setVariableLocal(VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET,scheduledCommunicationIds);
+            execution.getParent().setVariableLocal(VARNAME_CURRENT_COMMUNICATION_ID, nextCommId);
+            execution.getRootProcessInstance().setVariableLocal(VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET, scheduledCommunicationIds);
         }
-
-        log.info("scheduleNextCommunication: part="+partitionId+" - nextCom="+TimeLogUtils.format(nextCommEcheance));
+        log.info("scheduleNextCommunication: part={} - nextCommId={} - nextComEcheance={}", partitionId, nextCommId, TimeLogUtils.format(nextCommEcheance));
         return nextCommEcheance;
     }
 
