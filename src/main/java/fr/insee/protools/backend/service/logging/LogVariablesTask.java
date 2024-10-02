@@ -1,4 +1,4 @@
-package fr.insee.protools.backend.service.delegate.logging;
+package fr.insee.protools.backend.service.logging;
 
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.delegate.DelegateExecution;
