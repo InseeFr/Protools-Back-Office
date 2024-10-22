@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.insee.protools.backend.dto.sugoi.User;
 import fr.insee.protools.backend.restclient.RestClientHelper;
 import fr.insee.protools.backend.restclient.configuration.ApiConfigProperties;
+import fr.insee.protools.backend.restclient.configuration.annotation.RestClientRetryable;
 import fr.insee.protools.backend.restclient.exception.runtime.HttpClient4xxBPMNError;
 import fr.insee.protools.backend.service.exception.SugoiServiceCallBPMNError;
 import fr.insee.protools.backend.service.exception.UsernameAlreadyExistsSugoiBPMNError;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import static fr.insee.protools.backend.restclient.configuration.ApiConfigProperties.KNOWN_API.KNOWN_API_SUGOI;
 
@@ -30,6 +32,7 @@ public class SugoiServiceImpl implements ISugoiService{
     private String realm;
 
     @Override
+    @RestClientRetryable
     public User postCreateUser(User userBody) {
         if(userBody==null){
             String msg="called  SUGOI postCreateUser with empty userBody";
