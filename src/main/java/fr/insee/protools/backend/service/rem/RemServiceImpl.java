@@ -31,7 +31,7 @@ public class RemServiceImpl implements IRemService{
     private int pageSizeGetInterro;
 
     public PageResponse<JsonNode> getPartitionAllInterroPaginated(String partitionId, long page) {
-        log.debug("partitionId={} - page={} - pageSizeGetInterro={} }", partitionId, page, pageSizeGetInterro);
+        log.debug("getPartitionAllInterroPaginated: partitionId={} - page={} - pageSizeGetInterro={} }", partitionId, page, pageSizeGetInterro);
         ParameterizedTypeReference<PageResponse<JsonNode>> typeReference = new ParameterizedTypeReference<>() {
         };
         try {
@@ -48,7 +48,7 @@ public class RemServiceImpl implements IRemService{
             if(response==null){
                 response=new PageResponse<>();
             }
-            log.trace("partitionId={} - page={} - pageSizeGetInterro={} - response={} ", partitionId, page, pageSizeGetInterro, response.getContent().size());
+            log.trace("getPartitionAllInterroPaginated: partitionId={} - page={} - pageSizeGetInterro={} - response={} ", partitionId, page, pageSizeGetInterro, response.getContent().size());
             return response;
         } catch (HttpClient4xxBPMNError e) {
             if (e.getHttpStatusCodeError().equals(HttpStatus.NOT_FOUND)) {
@@ -64,7 +64,7 @@ public class RemServiceImpl implements IRemService{
     }
 
     public List<String> getInterrogationIdsWithoutAccountForPartition(String partitionId) {
-        log.debug("getSampleSuIds - partitionId={} ", partitionId);
+        log.debug("getInterrogationIdsWithoutAccountForPartition: - partitionId={} - begin", partitionId);
         ParameterizedTypeReference<List<InterrogationIdentifiersDto>> typeReference = new ParameterizedTypeReference<List<InterrogationIdentifiersDto>>() {
         };
 
@@ -83,8 +83,7 @@ public class RemServiceImpl implements IRemService{
                     response.stream()
                             .map(InterrogationIdentifiersDto::getInterrogationId)
                             .map(UUID::toString).toList();
-
-            log.trace("partitionId={} - interrogationIdsWithoutAccount={} ", partitionId, interrogationIdsWithoutAccount);
+            log.debug("getInterrogationIdsWithoutAccountForPartition: partitionId={} - interrogationIdsWithoutAccount.size={} - end", partitionId, interrogationIdsWithoutAccount.size());
             return interrogationIdsWithoutAccount;
         } catch (HttpClient4xxBPMNError e) {
             if (e.getHttpStatusCodeError().equals(HttpStatus.NOT_FOUND)) {
