@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VARNAME_CONTEXT;
+import static fr.insee.protools.backend.service.FlowableVariableNameConstants.*;
 
 @Component
 @Slf4j
@@ -27,7 +27,10 @@ public class LogVariablesTask implements JavaDelegate {
 
     Map<String,Object> filterVariables(Map<String,Object> input){
         return input.entrySet().stream()
-                .filter(entry -> ! (entry.getKey().equals(VARNAME_CONTEXT)))
+                .filter(entry -> (! entry.getKey().equals(VARNAME_CONTEXT))
+                        && (!entry.getKey().equals(VARNAME_REM_INTERRO_LIST) )
+                        && (!entry.getKey().equals(VARNAME_DIRECTORYACCESS_PWD_FOR_INTERRO_ID_MAP) )
+                )
                 .collect(
                         Collectors.toMap(Map.Entry::getKey, entry -> (entry.getValue() == null)?"null":entry.getValue()));
     }
