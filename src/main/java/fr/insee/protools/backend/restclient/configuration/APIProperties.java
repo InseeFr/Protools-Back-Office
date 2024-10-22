@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -20,6 +22,8 @@ public class APIProperties {
    @Valid
    private AuthProperties auth;
    private Boolean enabled=Boolean.FALSE;
+   private Duration readTimeout = Duration.ofSeconds(20);  // Default 20 seconds
+   private Duration exchangeTimeout = Duration.ofSeconds(20);  // Default 20 seconds
 
    @Data
    @NoArgsConstructor
