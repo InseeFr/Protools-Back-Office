@@ -55,13 +55,13 @@ public class ContextServiceImpl implements IContextService {
     private static final Map<String, ContextPair> contextCache = new ConcurrentHashMap<>();
     //TODO: Peut être que ca va sortir dans une dépendance externe
     private static final String SCHEMA_VALIDATION_FILE = "/schema/contexte-processus.json";
+    private static final JsonSchema contextJsonSchema = JsonSchemaFactory
+            .getInstance(SpecVersion.VersionFlag.V202012)
+            .getSchema(ContextServiceImpl.class.getResourceAsStream(SCHEMA_VALIDATION_FILE));
     private final RuntimeService runtimeService;
     private final TaskService taskService;
     private final RepositoryService repositoryService;
     private final ApplicationContext springApplicationContext;
-    private static final JsonSchema contextJsonSchema = JsonSchemaFactory
-            .getInstance(SpecVersion.VersionFlag.V202012)
-            .getSchema(ContextServiceImpl.class.getResourceAsStream(SCHEMA_VALIDATION_FILE));
 
     @Override
     public void processContextFileAndCompleteTask(MultipartFile file, String taskId) {
@@ -211,8 +211,8 @@ public class ContextServiceImpl implements IContextService {
     /**
      * Check if protoolsContextRootNode allows every Task implementing {@link  fr.insee.protools.backend.service.DelegateContextVerifier#getContextErrors  DelegateContextVerifier}  interface to run correctly
      *
-     * @param processDefinitionKey    The process (BPMN) identifier
-     * @param contexteProcessus The context to check
+     * @param processDefinitionKey The process (BPMN) identifier
+     * @param contexteProcessus    The context to check
      * @return A list of the problems found
      * @throws FlowableObjectNotFoundException if no process definition (BPMN) matches processDefinitionKey
      */
@@ -221,10 +221,10 @@ public class ContextServiceImpl implements IContextService {
 
         //At least, the campaign ID should be defined so we can write it on process variables to be used un groovy scripts
         Set<String> errors = new HashSet<>();
-        if(contexteProcessus.getId()==null){
+        if (contexteProcessus.getId() == null) {
             errors.add("id is missing");
         }
-        if(contexteProcessus.getMetadonnees()==null){
+        if (contexteProcessus.getMetadonnees() == null) {
             errors.add("metadonnees is missing");
         }
 

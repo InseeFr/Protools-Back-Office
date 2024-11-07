@@ -17,7 +17,7 @@ public class HttpClientRequestExceptionBPMNError extends ProtoolsBpmnError {
         log.error(this.getMessage());
     }
 
-    private static String computeMessage(WebClientRequestException ex){
+    private static String computeMessage(WebClientRequestException ex) {
         return String.format("WebClientException : class=[%s] - method=[%s] - uri=[%s] message=[%s] - root_cause=[%s] - root_message=[%s]",
                 ex.getClass(),
                 ex.getMethod(),

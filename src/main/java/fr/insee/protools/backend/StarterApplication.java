@@ -13,18 +13,19 @@ import org.springframework.retry.annotation.EnableRetry;
 @EnableRetry
 public class StarterApplication {
 
-        public static void main(String[] args) {
-                configureApplicationBuilder(new SpringApplicationBuilder()).build().run(args);        }
+    public static void main(String[] args) {
+        configureApplicationBuilder(new SpringApplicationBuilder()).build().run(args);
+    }
 
-        public static SpringApplicationBuilder configureApplicationBuilder(SpringApplicationBuilder springApplicationBuilder){
-                return springApplicationBuilder.sources(StarterApplication.class);
-        }
+    public static SpringApplicationBuilder configureApplicationBuilder(SpringApplicationBuilder springApplicationBuilder) {
+        return springApplicationBuilder.sources(StarterApplication.class);
+    }
 
-        @EventListener(ApplicationReadyEvent.class)
-        public void springdocStopIgnoringHttpServletRequest() {
-                //In springdoc : stop ignoring the HttpServletRequest parameters as they are used by Flowable
-                SpringDocUtils.getConfig().removeRequestWrapperToIgnore(HttpServletRequest.class);
-                SpringDocUtils.getConfig().removeRequestWrapperToIgnore(ServletRequest.class);
-        }
+    @EventListener(ApplicationReadyEvent.class)
+    public void springdocStopIgnoringHttpServletRequest() {
+        //In springdoc : stop ignoring the HttpServletRequest parameters as they are used by Flowable
+        SpringDocUtils.getConfig().removeRequestWrapperToIgnore(HttpServletRequest.class);
+        SpringDocUtils.getConfig().removeRequestWrapperToIgnore(ServletRequest.class);
+    }
 
 }

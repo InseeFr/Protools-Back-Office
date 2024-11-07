@@ -15,47 +15,47 @@ import java.time.Duration;
 @Data
 public class APIProperties {
 
-   @NotBlank
-   @Pattern(regexp = "^https?://[^\\s/$.?#].[^\\s]*$",
-           message = "Invalid URL format")
-   private String url;
-   @Valid
-   private AuthProperties auth;
-   private Boolean enabled=Boolean.FALSE;
-   private Duration readTimeout = Duration.ofSeconds(20);  // Default 20 seconds
-   private Duration exchangeTimeout = Duration.ofSeconds(20);  // Default 20 seconds
+    @NotBlank
+    @Pattern(regexp = "^https?://[^\\s/$.?#].[^\\s]*$",
+            message = "Invalid URL format")
+    private String url;
+    @Valid
+    private AuthProperties auth;
+    private Boolean enabled = Boolean.FALSE;
+    private Duration readTimeout = Duration.ofSeconds(20);  // Default 20 seconds
+    private Duration exchangeTimeout = Duration.ofSeconds(20);  // Default 20 seconds
 
-   @Data
-   @NoArgsConstructor
-   //Infos to retrieve an oath token
-   public static class AuthProperties {
-      @NotBlank
-      @Pattern(regexp = "^https?://[^\\s/$.?#].[^\\s]*$",
-              message = "Invalid URL format")
-      private String url;
-      @NotBlank
-      private String realm;
-      @NotBlank
-      private String clientId;
-      @NotBlank
-      @JsonIgnore
-      private String clientSecret;
+    @Data
+    @NoArgsConstructor
+    //Infos to retrieve an oath token
+    public static class AuthProperties {
+        @NotBlank
+        @Pattern(regexp = "^https?://[^\\s/$.?#].[^\\s]*$",
+                message = "Invalid URL format")
+        private String url;
+        @NotBlank
+        private String realm;
+        @NotBlank
+        private String clientId;
+        @NotBlank
+        @JsonIgnore
+        private String clientSecret;
 
-      public AuthProperties(String url, String realm, String clientId, String clientSecret) {
-         this.url = url;
-         this.realm = realm;
-         this.clientId = clientId;
-         this.clientSecret = clientSecret;
-      }
+        public AuthProperties(String url, String realm, String clientId, String clientSecret) {
+            this.url = url;
+            this.realm = realm;
+            this.clientId = clientId;
+            this.clientSecret = clientSecret;
+        }
 
-      @Override
-      public String toString() {
-         return "AuthProperties{" +
-                 "url='" + url + '\'' +
-                 ", realm='" + realm + '\'' +
-                 ", clientId='" + clientId + '\'' +
-                 '}';
-      }
-   }
+        @Override
+        public String toString() {
+            return "AuthProperties{" +
+                    "url='" + url + '\'' +
+                    ", realm='" + realm + '\'' +
+                    ", clientId='" + clientId + '\'' +
+                    '}';
+        }
+    }
 
 }

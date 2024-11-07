@@ -28,7 +28,7 @@ public class RemPutContactPlatineTaskREST implements JavaDelegate, DelegateConte
         //Get the contacts
         List<JsonNode> contactPlatineList = FlowableVariableUtils.getVariableOrThrow(execution, VARNAME_PLATINE_CONTACT_LIST, List.class);
         //If nothing to do ==> Directly return
-        if(contactPlatineList.isEmpty()){
+        if (contactPlatineList.isEmpty()) {
             log.info("ProcessInstanceId={} - end : Nothing to do",
                     execution.getProcessInstanceId());
             return;

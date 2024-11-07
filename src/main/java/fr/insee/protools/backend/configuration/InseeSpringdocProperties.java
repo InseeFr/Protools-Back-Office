@@ -9,18 +9,18 @@ import static org.springdoc.core.utils.Constants.SPRINGDOC_SWAGGER_UI_ENABLED;
 
 @Configuration
 @ConfigurationProperties(
-    prefix = "fr.insee.sndil.starter.springdoc"
+        prefix = "fr.insee.sndil.starter.springdoc"
 )
 @ConditionalOnProperty(name = SPRINGDOC_SWAGGER_UI_ENABLED, matchIfMissing = true)
 @Data
 public class InseeSpringdocProperties {
 
-        private String issuerUrlAuthorization;
-        private String issuerUrlRefresh;
-        private String issuerUrlToken;
-        private String issuerDescription;
-        private String contactName;
-        private String contactEmail;
-        private String contactUrl;
-        private String description;
+    private String issuerUrlAuthorization;
+    private String issuerUrlRefresh;
+    private String issuerUrlToken;
+    private String issuerDescription;
+    private String contactName;
+    private String contactEmail;
+    private String contactUrl;
+    private String description;
 }

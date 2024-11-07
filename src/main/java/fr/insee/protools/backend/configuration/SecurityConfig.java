@@ -34,11 +34,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final InseeSecurityTokenProperties inseeSecurityTokenProperties;
-
     public static final String STARTER_SECURITY_ENABLED = "fr.insee.sndil.starter.security.enabled";
     //Par défaut, spring sécurity prefixe les rôles avec cette chaine
     private static final String ROLE_PREFIX = "ROLE_";
+    private final InseeSecurityTokenProperties inseeSecurityTokenProperties;
     // Démonstration avec un rôle protégeant l'accès à un des endpoints
     @Value("${fr.insee.sndil.starter.role.administrateur}")
     private String administrateurRole;

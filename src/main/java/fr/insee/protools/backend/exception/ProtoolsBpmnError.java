@@ -13,6 +13,6 @@ public class ProtoolsBpmnError extends BpmnError {
     //Because we cannot get the message from within an eventSubprocess used to handle the bpmn error
     //OF course it is should be reverted when we find the solution
     public ProtoolsBpmnError(String errorCode, String message) {
-        super(message,message);
+        super(message, message);
     }
 }

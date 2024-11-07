@@ -9,6 +9,7 @@ public interface IContextService {
     /**
      * Process the uploaded file and store it's content in VARIABLE_NAME_SERIALIZED_CONTEXT_FILE engine variable.
      * If ok pass the task referenced by *taskId* to completed
+     *
      * @param file
      * @param taskId
      */

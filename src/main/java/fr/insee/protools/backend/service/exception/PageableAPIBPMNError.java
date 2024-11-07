@@ -8,6 +8,6 @@ public class PageableAPIBPMNError extends ProtoolsBpmnError {
 
 
     public PageableAPIBPMNError(String message) {
-        super(BPMNERROR_CODE_DEFAULT,message);
+        super(BPMNERROR_CODE_DEFAULT, message);
     }
 }

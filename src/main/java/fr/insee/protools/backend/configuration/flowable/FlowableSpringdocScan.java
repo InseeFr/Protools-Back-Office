@@ -23,7 +23,7 @@ public class FlowableSpringdocScan {
     public RestResponseFactory restResponseFactory(ObjectMapper objectMapper) {
         RestResponseFactory restResponseFactory = new RestResponseFactory(objectMapper);
         restResponseFactory.getVariableConverters().add(new ListLongRestVariableConverter());
-        return  restResponseFactory;
+        return restResponseFactory;
     }
 
 }

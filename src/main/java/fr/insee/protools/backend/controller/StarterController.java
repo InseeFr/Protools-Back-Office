@@ -20,60 +20,60 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StarterController {
 
-        private final Optional<BuildProperties> buildProperties;
+    private final Optional<BuildProperties> buildProperties;
 
-        private final  RestClientHelper restClientHelper;
+    private final RestClientHelper restClientHelper;
 
-        @GetMapping("/healthcheck")
-        public ResponseEntity<String> healthcheck(){
-                return ResponseEntity.ok(
-                    """
-                         OK
-                         
-                         Version %s
-                         Utilisateur %s
-                    """
+    @GetMapping("/healthcheck")
+    public ResponseEntity<String> healthcheck() {
+        return ResponseEntity.ok(
+                """
+                             OK
+                        
+                             Version %s
+                             Utilisateur %s
+                        """
                         .formatted(
-                            buildProperties.map(BuildProperties::getVersion).orElse("n.a"),
-                            SecurityContextHolder.getContext().getAuthentication().getName()
-                        )                );
-        }
+                                buildProperties.map(BuildProperties::getVersion).orElse("n.a"),
+                                SecurityContextHolder.getContext().getAuthentication().getName()
+                        ));
+    }
 
-        @GetMapping("/healthcheckadmin")
-        public ResponseEntity<String> healthcheckadmin(){
-                return ResponseEntity.ok(
-                    """
-                         OK
-                         
-                         Version %s
-                         Administrateur %s
-                    """
-                    .formatted(
-                        buildProperties.map(BuildProperties::getVersion).orElse("n.a"),
-                        SecurityContextHolder.getContext().getAuthentication().getName()
-                    )
-                );
-        }
+    @GetMapping("/healthcheckadmin")
+    public ResponseEntity<String> healthcheckadmin() {
+        return ResponseEntity.ok(
+                """
+                             OK
+                        
+                             Version %s
+                             Administrateur %s
+                        """
+                        .formatted(
+                                buildProperties.map(BuildProperties::getVersion).orElse("n.a"),
+                                SecurityContextHolder.getContext().getAuthentication().getName()
+                        )
+        );
+    }
 
-        @GetMapping("/token_details_by_api")
-        public ResponseEntity<String> tokensDetailsByAPI(){
-                StringBuilder result = new StringBuilder("List of tokens roles : ");
-                for(var x : restClientHelper.getTokenDetailsByAPI().entrySet()){
-                        result.append("\n").append(x.getKey()).append(" : ").append(x.getValue());
-                }
-                return ResponseEntity.ok(result.toString());
+    @GetMapping("/token_details_by_api")
+    public ResponseEntity<String> tokensDetailsByAPI() {
+        StringBuilder result = new StringBuilder("List of tokens roles : ");
+        for (var x : restClientHelper.getTokenDetailsByAPI().entrySet()) {
+            result.append("\n").append(x.getKey()).append(" : ").append(x.getValue());
         }
+        return ResponseEntity.ok(result.toString());
+    }
 
-        @GetMapping("/api_configuration")
-        public ResponseEntity<JsonNode> apiConfiguration(){
-                return ResponseEntity.ok(restClientHelper.getAPIConfigDetails());
-        }
+    @GetMapping("/api_configuration")
+    public ResponseEntity<JsonNode> apiConfiguration() {
+        return ResponseEntity.ok(restClientHelper.getAPIConfigDetails());
+    }
 
-        @GetMapping(value="/changelog" , produces = MediaType.TEXT_PLAIN_VALUE)
-        public Resource changelog() {
+    @GetMapping(value = "/changelog", produces = MediaType.TEXT_PLAIN_VALUE)
+    public Resource changelog() {
 
-                return new ClassPathResource("changelog.md");
-        }
+        return new ClassPathResource("changelog.md");
+    }
 
 
 }

@@ -20,14 +20,14 @@ public class MeshuggahCreateContextTaskREST implements JavaDelegate, DelegateCon
 
     @Override
     public void execute(DelegateExecution execution) {
-        log.info("ProcessInstanceId={}  begin",execution.getProcessInstanceId());
+        log.info("ProcessInstanceId={}  begin", execution.getProcessInstanceId());
         JsonNode contextRootNode = protoolsContext.getContextJsonNodeByProcessInstance(execution.getProcessInstanceId());
         ContexteProcessus contexteProcessus = protoolsContext.getContextDtoByProcessInstance(execution.getProcessInstanceId());
 
-        checkContextOrThrow(log,execution.getProcessInstanceId(), contexteProcessus);
+        checkContextOrThrow(log, execution.getProcessInstanceId(), contexteProcessus);
         String campainId = contexteProcessus.getId().toString();
 
-        service.postContext(campainId,contextRootNode);
+        service.postContext(campainId, contextRootNode);
 
         log.info("ProcessInstanceId={}  end", execution.getProcessInstanceId());
     }

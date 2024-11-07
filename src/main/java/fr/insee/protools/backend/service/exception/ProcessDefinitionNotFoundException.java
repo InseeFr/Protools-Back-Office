@@ -5,7 +5,7 @@ import org.flowable.engine.repository.ProcessDefinition;
 
 /**
  * This exception is thrown when you try to create a process instance with an unknown process definition
- * */
+ */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class ProcessDefinitionNotFoundException extends FlowableObjectNotFoundException {
     public ProcessDefinitionNotFoundException(String processDefinitionKey) {

@@ -5,4 +5,5 @@ public record PlatinePilotageCommunicationEventDto(
         String communicationId,
         String communicationRequestId,
         PlatinePilotageCommunicationEventType state
-) {}
+) {
+}

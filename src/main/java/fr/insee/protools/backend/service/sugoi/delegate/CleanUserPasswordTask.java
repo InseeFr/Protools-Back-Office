@@ -22,7 +22,7 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VA
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CleanUserPasswordTask  implements JavaDelegate {
+public class CleanUserPasswordTask implements JavaDelegate {
 
     private final ProcessEngineConfigurationImpl processEngineConfiguration;
 

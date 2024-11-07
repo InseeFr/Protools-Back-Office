@@ -20,11 +20,10 @@ import static fr.insee.protools.backend.restclient.configuration.ApiConfigProper
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SugoiServiceImpl implements ISugoiService{
-
-    private static final ApiConfigProperties.KNOWN_API API = KNOWN_API_SUGOI;
+public class SugoiServiceImpl implements ISugoiService {
 
     static final String STORAGE = "default";
+    private static final ApiConfigProperties.KNOWN_API API = KNOWN_API_SUGOI;
     private final RestClientHelper restClientHelper;
     private final ObjectMapper objectMapper;
     @Value("${fr.insee.protools.api.sugoi.dmz-account-creation-realm:questionnaire-particuliers}")
@@ -33,8 +32,8 @@ public class SugoiServiceImpl implements ISugoiService{
     @Override
     @RestClientRetryable
     public User postCreateUser(User userBody) {
-        if(userBody==null){
-            String msg="called  SUGOI postCreateUser with empty userBody";
+        if (userBody == null) {
+            String msg = "called  SUGOI postCreateUser with empty userBody";
             log.error(msg);
             throw new SugoiServiceCallBPMNError(msg);
         }
@@ -54,7 +53,7 @@ public class SugoiServiceImpl implements ISugoiService{
             if (e.getHttpStatusCodeError().equals(HttpStatus.CONFLICT)) {
                 String msg =
                         "Error 409/CONFLICT during SUGOI post create users userBody.username=" + userBody.getUsername()
-                        + " (check that the username already exists in SUGOI) - msg=" + e.getMessage();
+                                + " (check that the username already exists in SUGOI) - msg=" + e.getMessage();
                 log.error(msg);
                 throw new UsernameAlreadyExistsSugoiBPMNError(msg);
             }

@@ -6,6 +6,6 @@ import static fr.insee.protools.backend.service.BPMNErrorCode.BPMNERROR_CODE_DEF
 
 public class JsonParsingBPMNError extends ProtoolsBpmnError {
     public JsonParsingBPMNError(String message, Throwable cause) {
-        super(BPMNERROR_CODE_DEFAULT, message+" Exception: "+cause.getMessage());
+        super(BPMNERROR_CODE_DEFAULT, message + " Exception: " + cause.getMessage());
     }
 }

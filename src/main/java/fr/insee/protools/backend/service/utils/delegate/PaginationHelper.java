@@ -31,8 +31,8 @@ public interface PaginationHelper {
      * @param execution
      * @param varnameCurrentPage
      * @param varnameIsLastPage
-     * @param getService           a functional interface to be used for the read
-     * @param getServiceParams     the parameters for the functional interface call
+     * @param getService         a functional interface to be used for the read
+     * @param getServiceParams   the parameters for the functional interface call
      */
     default void getAndTreat(DelegateExecution execution, String varnameCurrentPage, String varnameIsLastPage, IGetFromService getService, Object... getServiceParams) {
         getLogger().info("ProcessInstanceId={}  begin", execution.getProcessInstanceId());

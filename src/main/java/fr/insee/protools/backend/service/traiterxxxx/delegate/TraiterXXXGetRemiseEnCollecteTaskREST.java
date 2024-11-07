@@ -18,17 +18,17 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VA
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class TraiterXXXGetRemiseEnCollecteTaskREST  implements JavaDelegate, DelegateContextVerifier {
+public class TraiterXXXGetRemiseEnCollecteTaskREST implements JavaDelegate, DelegateContextVerifier {
     private final ITraiterXXXService service;
 
     @Override
     public void execute(DelegateExecution execution) {
         String currentPartitionId = FlowableVariableUtils.getVariableOrThrow(execution, VARNAME_CURRENT_PARTITION_ID, String.class);
-        log.info("ProcessInstanceId={} - currentPartitionId={} begin",execution.getProcessInstanceId(),currentPartitionId);
+        log.info("ProcessInstanceId={} - currentPartitionId={} begin", execution.getProcessInstanceId(), currentPartitionId);
 
         List<JsonNode> interroRemiseEnCollecteList = service.getRemiseEnCollecteForPartition(currentPartitionId);
-        execution.getParent().setVariableLocal(VARNAME_INTERRO_REMISE_EN_COLLECTE_LIST,interroRemiseEnCollecteList);
+        execution.getParent().setVariableLocal(VARNAME_INTERRO_REMISE_EN_COLLECTE_LIST, interroRemiseEnCollecteList);
 
-        log.info("ProcessInstanceId={} - currentPartitionId={} - end",execution.getProcessInstanceId(),currentPartitionId);
+        log.info("ProcessInstanceId={} - currentPartitionId={} - end", execution.getProcessInstanceId(), currentPartitionId);
     }
 }

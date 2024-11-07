@@ -35,7 +35,7 @@ public class ProtoolsProcessController {
     })
     public ResponseEntity<Void> uploadFile(
             @Parameter(name = "file", description = "JSON file with the context", required = true)
-            @RequestPart (name = "file") MultipartFile file,
+            @RequestPart(name = "file") MultipartFile file,
             @RequestParam("taskID") String taskID
     ) {
         contextService.processContextFileAndCompleteTask(file, taskID);
@@ -46,7 +46,7 @@ public class ProtoolsProcessController {
     @PostMapping(value = "/create_process_instance_with_context", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Start a process instance providing and provide de protools context",
             description = "Start a process instance with provided *processDefinitionId* and *businessKey* "
-            + "and the protools JSON context similary with what is done by /runtime/process-instances" )
+                    + "and the protools JSON context similary with what is done by /runtime/process-instances")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "The received file is not a valid JSON"),
@@ -56,10 +56,10 @@ public class ProtoolsProcessController {
     })
     public ResponseEntity<Void> createProcessInstanceWithContext(
             @Parameter(name = "file", description = "JSON file with the context", required = true)
-            @RequestPart (name = "file") MultipartFile file,
+            @RequestPart(name = "file") MultipartFile file,
             @RequestParam("processDefinitionId") String processDefinitionId,
-            @RequestParam(name="businessKey") String businessKey) {
-            contextService.processContextFileAndCreateProcessInstance(file,processDefinitionId,businessKey);
-            return new ResponseEntity<>(HttpStatus.OK);
+            @RequestParam(name = "businessKey") String businessKey) {
+        contextService.processContextFileAndCreateProcessInstance(file, processDefinitionId, businessKey);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

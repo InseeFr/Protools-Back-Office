@@ -23,18 +23,17 @@ import static fr.insee.protools.backend.restclient.configuration.ApiConfigProper
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PlatinePilotageServiceImpl implements IPlatinePilotageService{
+public class PlatinePilotageServiceImpl implements IPlatinePilotageService {
 
+    private static final ApiConfigProperties.KNOWN_API API = KNOWN_API_PLATINE_PILOTAGE;
     private final RestClientHelper restClientHelper;
-    private static final ApiConfigProperties.KNOWN_API API= KNOWN_API_PLATINE_PILOTAGE;
-
     @Value("${fr.insee.protools.api.platine-pilotage.interrogation.page.size:5000}")
     private int pageSizeGetInterro;
 
     @Override
     public void postCommunicationEvents(List<PlatinePilotageCommunicationEventDto> platinePilotageCommunicationEventList) {
         log.trace("postCommunicationEvents: ");
-        logJson("postCommunicationEvents ",platinePilotageCommunicationEventList,log, Level.TRACE);
+        logJson("postCommunicationEvents ", platinePilotageCommunicationEventList, log, Level.TRACE);
 
         var response = restClientHelper.getRestClient(API)
                 .post()
@@ -42,38 +41,39 @@ public class PlatinePilotageServiceImpl implements IPlatinePilotageService{
                 .body(platinePilotageCommunicationEventList)
                 .retrieve()
                 .body(String.class);
-        log.trace("postCommunicationEvents: response={} ",response);
+        log.trace("postCommunicationEvents: response={} ", response);
     }
 
     @Override
     public void postContext(String campaignId, JsonNode contextRootNode) {
-        log.trace("postContext: campaignId={}",campaignId);
+        log.trace("postContext: campaignId={}", campaignId);
         var response = restClientHelper.getRestClient(KNOWN_API_PLATINE_PILOTAGE)
                 .post()
                 .uri("/context")
                 .body(contextRootNode)
                 .retrieve()
                 .body(String.class);
-        log.trace("postContext: campaignId={} - response={} ",campaignId,response);
+        log.trace("postContext: campaignId={} - response={} ", campaignId, response);
     }
 
     @Override
     public void postInterrogations(String campaignId, List<JsonNode> interrogations) {
-        log.trace("postInterrogations: campaignId={}",campaignId);
-        logJson("postInterrogations ",interrogations,log,Level.TRACE);
+        log.trace("postInterrogations: campaignId={}", campaignId);
+        logJson("postInterrogations ", interrogations, log, Level.TRACE);
         var response = restClientHelper.getRestClient(API)
                 .post()
                 .uri("/interrogations")
                 .body(interrogations)
                 .retrieve()
                 .body(String.class);
-        log.trace("postInterrogations: campaignId={} - response={} ",campaignId,response);
+        log.trace("postInterrogations: campaignId={} - response={} ", campaignId, response);
     }
 
     @Override
     public PageResponse<JsonNode> getInterrogationToFollowUpPaginated(String partitionId, long page, Optional<Boolean> isToFollowUp) {
-        log.debug("partitionId={} - page={} - pageSizeGetInterro={} - isToFollowUp={}",partitionId,page,pageSizeGetInterro,isToFollowUp);
-        ParameterizedTypeReference<PageResponse<JsonNode>> typeReference = new ParameterizedTypeReference<>() { };
+        log.debug("partitionId={} - page={} - pageSizeGetInterro={} - isToFollowUp={}", partitionId, page, pageSizeGetInterro, isToFollowUp);
+        ParameterizedTypeReference<PageResponse<JsonNode>> typeReference = new ParameterizedTypeReference<>() {
+        };
         try {
             PageResponse<JsonNode> response = restClientHelper.getRestClient(API)
                     .get()
@@ -86,19 +86,18 @@ public class PlatinePilotageServiceImpl implements IPlatinePilotageService{
                             .build())
                     .retrieve()
                     .body(typeReference);
-            if(response==null){
-                response=new PageResponse<>();
+            if (response == null) {
+                response = new PageResponse<>();
             }
-            log.trace("partitionId={} - page={} - pageSizeGetInterro={} - response={} ", partitionId,page,pageSizeGetInterro, response.getContent().size());
+            log.trace("partitionId={} - page={} - pageSizeGetInterro={} - response={} ", partitionId, page, pageSizeGetInterro, response.getContent().size());
             return response;
-        }
-        catch (HttpClient4xxBPMNError e){
-            if(e.getHttpStatusCodeError().equals(HttpStatus.NOT_FOUND)){
-                String msg=
-                        "Error 404/NOT_FOUND during Platine Pilotage getInterrogationToFollowUpPaginated with partitionId="+partitionId
-                                + " - msg="+e.getMessage();
+        } catch (HttpClient4xxBPMNError e) {
+            if (e.getHttpStatusCodeError().equals(HttpStatus.NOT_FOUND)) {
+                String msg =
+                        "Error 404/NOT_FOUND during Platine Pilotage getInterrogationToFollowUpPaginated with partitionId=" + partitionId
+                                + " - msg=" + e.getMessage();
                 log.error(msg);
-                throw new HttpClient4xxBPMNError(msg,e.getHttpStatusCodeError());
+                throw new HttpClient4xxBPMNError(msg, e.getHttpStatusCodeError());
             }
             //Currently no remediation so just rethrow
             throw e;

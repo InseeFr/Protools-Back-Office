@@ -17,11 +17,7 @@ public class HttpClientNetworkExceptionBPMNError extends ProtoolsBpmnError {
         log.error(this.getMessage());
     }
 
-    public WebClientRequestException getSourceException() {
-        return ex;
-    }
-
-    private static String computeMessage(WebClientRequestException ex){
+    private static String computeMessage(WebClientRequestException ex) {
         return String.format("WebClientNetworkExceptionBPMNError : class=[%s] - method=[%s] - uri=[%s] - message=[%s] - root_cause=[%s] - root_message=[%s]",
                 ex.getClass(),
                 ex.getMethod(),
@@ -29,5 +25,9 @@ public class HttpClientNetworkExceptionBPMNError extends ProtoolsBpmnError {
                 ex.getMessage(),
                 ex.getMostSpecificCause().getClass(),
                 ex.getMostSpecificCause().getMessage());
+    }
+
+    public WebClientRequestException getSourceException() {
+        return ex;
     }
 }

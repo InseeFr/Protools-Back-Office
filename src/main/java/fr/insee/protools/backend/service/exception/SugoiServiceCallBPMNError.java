@@ -7,6 +7,6 @@ import static fr.insee.protools.backend.service.BPMNErrorCode.BPMNERROR_CODE_DEF
 public class SugoiServiceCallBPMNError extends ProtoolsBpmnError {
 
     public SugoiServiceCallBPMNError(String message) {
-        super(BPMNERROR_CODE_DEFAULT,message);
+        super(BPMNERROR_CODE_DEFAULT, message);
     }
 }

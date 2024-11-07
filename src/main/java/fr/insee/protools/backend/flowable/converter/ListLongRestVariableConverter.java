@@ -26,7 +26,7 @@ public class ListLongRestVariableConverter implements RestVariableConverter {
             if (!(result.getValue() instanceof String val)) {
                 throw new FlowableIllegalArgumentException("Converter can only convert strings");
             }
-            val=val.replaceAll("\\s+", "");
+            val = val.replaceAll("\\s+", "");
             try {
                 return Arrays.stream(val.split(","))
                         .map(Long::parseLong)
@@ -47,18 +47,15 @@ public class ListLongRestVariableConverter implements RestVariableConverter {
 
             if (list.isEmpty()) {
                 result.setValue("");
-            }
-            else if (list.get(0) instanceof Long) {
+            } else if (list.get(0) instanceof Long) {
                 String listAsString = list.stream()
                         .map(Object::toString) // Map Long to String
                         .collect(Collectors.joining(","));
                 result.setValue(listAsString);
-            }
-            else {
+            } else {
                 throw new FlowableIllegalArgumentException("Converter can only convert list of long");
             }
-        }
-        else {
+        } else {
             result.setValue(null);
         }
     }

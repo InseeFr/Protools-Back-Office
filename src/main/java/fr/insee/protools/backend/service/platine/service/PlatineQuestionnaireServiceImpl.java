@@ -16,34 +16,34 @@ import static fr.insee.protools.backend.restclient.configuration.ApiConfigProper
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PlatineQuestionnaireServiceImpl implements IPlatineQuestionnaireService{
+public class PlatineQuestionnaireServiceImpl implements IPlatineQuestionnaireService {
 
+    private static final ApiConfigProperties.KNOWN_API API = KNOWN_API_PLATINE_QUESTIONNAIRE;
     private final RestClientHelper restClientHelper;
-    private static final ApiConfigProperties.KNOWN_API API= KNOWN_API_PLATINE_QUESTIONNAIRE;
 
     @Override
     public void postContext(String campaignId, JsonNode contextRootNode) {
-        log.trace("postContext: campaignId={}",campaignId);
+        log.trace("postContext: campaignId={}", campaignId);
         var response = restClientHelper.getRestClient(API)
                 .post()
                 .uri("/context")
                 .body(contextRootNode)
                 .retrieve()
                 .body(String.class);
-        log.trace("postContext: campaignId={} - response={} ",campaignId,response);
+        log.trace("postContext: campaignId={} - response={} ", campaignId, response);
     }
 
     @Override
     public void postInterrogations(String campaignId, List<JsonNode> interrogations) {
-        log.trace("postInterrogations: campaignId={}",campaignId);
-        logJson("postInterrogations ",interrogations,log,Level.TRACE);
+        log.trace("postInterrogations: campaignId={}", campaignId);
+        logJson("postInterrogations ", interrogations, log, Level.TRACE);
         var response = restClientHelper.getRestClient(API)
                 .post()
                 .uri("/interrogations")
                 .body(interrogations)
                 .retrieve()
                 .body(String.class);
-        log.trace("postInterrogations: campaignId={} - response={} ",campaignId,response);
+        log.trace("postInterrogations: campaignId={} - response={} ", campaignId, response);
     }
 
 }

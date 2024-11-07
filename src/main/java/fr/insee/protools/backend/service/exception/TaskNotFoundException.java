@@ -9,12 +9,14 @@ import org.flowable.task.api.Task;
 @java.lang.SuppressWarnings("squid:MaximumInheritanceDepth")
 public class TaskNotFoundException extends FlowableObjectNotFoundException {
 
-    /** the id of the task */
+    /**
+     * the id of the task
+     */
     private final String taskId;
 
     public TaskNotFoundException(String taskId) {
         super("No task found with id '" + taskId + "'.", Task.class);
-        this.taskId=taskId;
+        this.taskId = taskId;
     }
 
     public String getTaskId() {

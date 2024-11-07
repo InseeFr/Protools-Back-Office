@@ -11,21 +11,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-
 public class LoggingHelper {
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface ExcludeFromJacocoGeneratedReport {}
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private LoggingHelper() {
+    }
+
     @ExcludeFromJacocoGeneratedReport
     public static void logJson(String msg, Object dto, Logger logger, Level level) {
-        if (logger.isEnabledForLevel(level) && msg!=null) {
+        if (logger.isEnabledForLevel(level) && msg != null) {
             try {
                 String json = objectMapper.writeValueAsString(dto);
-                String logLine = msg +" - " + json;
+                String logLine = msg + " - " + json;
                 switch (level) {
                     case TRACE -> logger.trace(logLine);
                     case DEBUG -> logger.debug(logLine);
@@ -39,5 +37,9 @@ public class LoggingHelper {
             }
         }
     }
-    private LoggingHelper(){}
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface ExcludeFromJacocoGeneratedReport {
+    }
 }

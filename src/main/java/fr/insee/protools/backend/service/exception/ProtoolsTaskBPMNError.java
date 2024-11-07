@@ -7,6 +7,6 @@ import static fr.insee.protools.backend.service.BPMNErrorCode.BPMNERROR_CODE_DEF
 //TODO : Créer une classe mère de toutes nos expcetions pour l'attrapper dans les controller advice
 public class ProtoolsTaskBPMNError extends ProtoolsBpmnError {
     public ProtoolsTaskBPMNError(String message) {
-        super(BPMNERROR_CODE_DEFAULT,message);
+        super(BPMNERROR_CODE_DEFAULT, message);
     }
 }

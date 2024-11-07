@@ -28,7 +28,7 @@ public class RemPostResmiseEnCollecteTaskREST implements JavaDelegate, DelegateC
         //Get the contacts
         List<JsonNode> interroRemiseEnCollecteList = FlowableVariableUtils.getVariableOrThrow(execution, VARNAME_INTERRO_REMISE_EN_COLLECTE_LIST, List.class);
         //If nothing to do ==> Directly return
-        if(interroRemiseEnCollecteList.isEmpty()){
+        if (interroRemiseEnCollecteList.isEmpty()) {
             log.info("ProcessInstanceId={} - end : Nothing to do",
                     execution.getProcessInstanceId());
             return;

@@ -13,35 +13,36 @@ import java.util.Set;
  */
 public interface DelegateContextVerifier {
 
+    static String computeMissingMessage(String missingElement, Class<?> classUsingThisElement) {
+        return String.format("Class=%s : Missing Context element name=%s ", classUsingThisElement.getSimpleName(), missingElement);
+    }
+
+    static String computeIncorrectMessage(String incorrectElement, String message, Class<?> classUsingThisElement) {
+        return String.format("Class=%s : Wrong Context element name=%s - message=%s ", classUsingThisElement.getSimpleName(), incorrectElement, message);
+    }
+
+    static String computeIncorrectEnumMessage(String incorrectElement, String value, String enumValues, Class<?> classUsingThisElement) {
+        return String.format("Class=%s : Incorrect enum name=%s - value=[%s] - expected one of %s"
+                , classUsingThisElement.getSimpleName()
+                , incorrectElement
+                , value
+                , enumValues);
+    }
+
     default Set<String> getContextErrors(ContexteProcessus context) {
         return Set.of();
     }
 
-    static String computeMissingMessage(String missingElement, Class<?> classUsingThisElement){
-        return String.format("Class=%s : Missing Context element name=%s ", classUsingThisElement.getSimpleName(),missingElement);
-    }
-
-    static String computeIncorrectMessage(String incorrectElement, String message,Class<?> classUsingThisElement){
-        return String.format("Class=%s : Wrong Context element name=%s - message=%s ", classUsingThisElement.getSimpleName(),incorrectElement,message);
-    }
-    static String computeIncorrectEnumMessage(String incorrectElement,String value, String enumValues, Class<?> classUsingThisElement){
-        return String.format("Class=%s : Incorrect enum name=%s - value=[%s] - expected one of %s"
-                ,classUsingThisElement.getSimpleName()
-                ,incorrectElement
-                , value
-                ,enumValues);
-    }
-
-    default void checkContextOrThrow(Logger log,String processInstanceId, ContexteProcessus context) {
-        if(context==null)
+    default void checkContextOrThrow(Logger log, String processInstanceId, ContexteProcessus context) {
+        if (context == null)
             throw new BadContexMissingBPMNError(String.format("ProcessInstanceId=%s - context is missing", processInstanceId));
 
         var errors = getContextErrors(context);
-        if(!errors.isEmpty()){
-            for (var msg: errors) {
+        if (!errors.isEmpty()) {
+            for (var msg : errors) {
                 log.error(msg);
             }
-            throw new BadContextIncorrectBPMNError(String.format("ProcessInstanceId=%s - context is incorrect missingNodes=%s", processInstanceId,errors));
+            throw new BadContextIncorrectBPMNError(String.format("ProcessInstanceId=%s - context is incorrect missingNodes=%s", processInstanceId, errors));
         }
     }
 }

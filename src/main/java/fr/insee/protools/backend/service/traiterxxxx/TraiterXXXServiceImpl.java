@@ -15,15 +15,16 @@ import static fr.insee.protools.backend.restclient.configuration.ApiConfigProper
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TraiterXXXServiceImpl implements ITraiterXXXService{
+public class TraiterXXXServiceImpl implements ITraiterXXXService {
 
-    private final RestClientHelper restClientHelper;
     private static final ApiConfigProperties.KNOWN_API API = KNOWN_API_TRAITERXXX;
+    private final RestClientHelper restClientHelper;
 
     @Override
     public List<JsonNode> getRemiseEnCollecteForPartition(String partitionId) {
-        log.debug("getRemiseEnCollecteForPartition - partitionId={} ",partitionId);
-        ParameterizedTypeReference<List<JsonNode>> typeReference = new ParameterizedTypeReference<>() { };
+        log.debug("getRemiseEnCollecteForPartition - partitionId={} ", partitionId);
+        ParameterizedTypeReference<List<JsonNode>> typeReference = new ParameterizedTypeReference<>() {
+        };
 
         List<JsonNode> response = restClientHelper.getRestClient(API)
                 .get()
@@ -38,14 +39,14 @@ public class TraiterXXXServiceImpl implements ITraiterXXXService{
     }
 
     @Override
-    public void postContext(String campaignId,JsonNode contextRootNode) {
-        log.trace("postContext: campaignId={}",campaignId);
+    public void postContext(String campaignId, JsonNode contextRootNode) {
+        log.trace("postContext: campaignId={}", campaignId);
         var response = restClientHelper.getRestClient(API)
                 .post()
                 .uri("/context")
                 .body(contextRootNode)
                 .retrieve()
                 .body(String.class);
-        log.trace("postContext: campaignId={} - response={} ",campaignId,response);
+        log.trace("postContext: campaignId={} - response={} ", campaignId, response);
     }
 }

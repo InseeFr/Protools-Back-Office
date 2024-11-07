@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface IUniteEnquetee {
 
-	@Transactional
-	void addManyUniteEnquetee(List<JsonNode> listeUe);
+    @Transactional
+    void addManyUniteEnquetee(List<JsonNode> listeUe);
 
-	void addManyUniteEnquetee(List<JsonNode> listeUe, String processInstanceId, String currentActivityId);
+    void addManyUniteEnquetee(List<JsonNode> listeUe, String processInstanceId, String currentActivityId);
 
-	void addManyUniteEnqueteeDeleteColonneClass(List<JsonNode> listeUe);
+    void addManyUniteEnqueteeDeleteColonneClass(List<JsonNode> listeUe);
 
-	boolean isTerminated(String processInstanceId, String currentActivityId, long numberCommandes);
+    boolean isTerminated(String processInstanceId, String currentActivityId, long numberCommandes);
 
-	long getCommandesByProcessInstanceIdAndCurrentActivityId(String processInstanceId, String currentActivityId);
+    long getCommandesByProcessInstanceIdAndCurrentActivityId(String processInstanceId, String currentActivityId);
 }

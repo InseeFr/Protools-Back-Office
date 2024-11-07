@@ -32,28 +32,26 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class KeycloakService {
 
+    public static final int TOKEN_REFRESH_LIMIT_MILLISECONDS = 30 * 1000;
     private final Environment environment;
+    //We will keep one token by auth server / realm / clientId
+    Map<APIProperties.AuthProperties, Token> tokenByAuthRealm = new HashMap<>();
     private RestClient restClient;
 
-    public static final int TOKEN_REFRESH_LIMIT_MILLISECONDS = 30*1000;
-    //We will keep one token by auth server / realm / clientId
-    Map<APIProperties.AuthProperties, Token> tokenByAuthRealm=new HashMap<>();
-
     public String getToken(APIProperties.AuthProperties authProperties) throws KeycloakTokenConfigBPMNError {
-        log.debug("getToken for authProperties={}",authProperties);
-        if(!isValidURL(authProperties.getUrl())
-                || authProperties.getClientId()==null || authProperties.getClientId().isBlank()
-                || authProperties.getRealm()==null || authProperties.getRealm().isBlank()
-                || authProperties.getClientSecret()==null || authProperties.getClientSecret().isBlank())
-        {
-            throw new KeycloakTokenConfigBPMNError(String.format("Auth is not correctly configured for [%s]",authProperties));
+        log.debug("getToken for authProperties={}", authProperties);
+        if (!isValidURL(authProperties.getUrl())
+                || authProperties.getClientId() == null || authProperties.getClientId().isBlank()
+                || authProperties.getRealm() == null || authProperties.getRealm().isBlank()
+                || authProperties.getClientSecret() == null || authProperties.getClientSecret().isBlank()) {
+            throw new KeycloakTokenConfigBPMNError(String.format("Auth is not correctly configured for [%s]", authProperties));
         }
 
         Token token = tokenByAuthRealm.get(authProperties);
         logToken(token);
 
         //We refresh any expired token or that will expire within TOKEN_REFRESH_LIMIT_MILISECONDS
-        if(token==null || Instant.now().toEpochMilli() >= (token.endValidityTimeMillis()- TOKEN_REFRESH_LIMIT_MILLISECONDS)){
+        if (token == null || Instant.now().toEpochMilli() >= (token.endValidityTimeMillis() - TOKEN_REFRESH_LIMIT_MILLISECONDS)) {
             log.trace("Refresh the token");
             refreshToken(authProperties);
         }
@@ -61,14 +59,14 @@ public class KeycloakService {
     }
 
     private void refreshToken(APIProperties.AuthProperties authProperties) throws KeycloakTokenConfigBPMNError {
-        log.debug("refreshToken for authProperties={}",authProperties);
+        log.debug("refreshToken for authProperties={}", authProperties);
 
-        String uri = String.format("%s/realms/%s/protocol/openid-connect/token",authProperties.getUrl(),authProperties.getRealm());
+        String uri = String.format("%s/realms/%s/protocol/openid-connect/token", authProperties.getUrl(), authProperties.getRealm());
         try {
             uri = new URI(uri).normalize().toString();
         } catch (URISyntaxException e) {
             //Will probably never be reached if URL is tests before
-            throw new KeycloakTokenConfigBPMNError(String.format("Auth is not correctly configured for [%s]",authProperties));
+            throw new KeycloakTokenConfigBPMNError(String.format("Auth is not correctly configured for [%s]", authProperties));
         }
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("grant_type", "client_credentials");
@@ -78,18 +76,17 @@ public class KeycloakService {
 
 
         KeycloakResponse response = restClient.post()
-            .uri(uri)
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-            .body(requestBody)
-            .retrieve()
-            .toEntity(KeycloakResponse.class).getBody();
+                .uri(uri)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .body(requestBody)
+                .retrieve()
+                .toEntity(KeycloakResponse.class).getBody();
         //TODO: timeout configurable ; handling des exceptions (ex: block) ; codes erreur http
-       //TODO : voir aussi cette histoire de timeout
-        if(response!=null) {
+        //TODO : voir aussi cette histoire de timeout
+        if (response != null) {
             endValidityTimeMillis += TimeUnit.SECONDS.toMillis(response.getExpiresIn());
             tokenByAuthRealm.put(authProperties, new Token(response.getAccesToken(), endValidityTimeMillis));
-        }
-        else{
+        } else {
             log.error("refreshToken: null response");
         }
     }
@@ -107,7 +104,7 @@ public class KeycloakService {
     }
 
     boolean isValidURL(String url) {
-        if(url==null || url.isBlank()){
+        if (url == null || url.isBlank()) {
             return false;
         }
         try {
@@ -118,16 +115,15 @@ public class KeycloakService {
         }
     }
 
-//    @ExcludeFromJacocoGeneratedReport
-    private void logToken(Token token){
-        if(log.isTraceEnabled()){
+    //    @ExcludeFromJacocoGeneratedReport
+    private void logToken(Token token) {
+        if (log.isTraceEnabled()) {
             var currentDt = Instant.now().toEpochMilli();
-            if(token!=null) {
+            if (token != null) {
                 log.trace("token.endValidityTimeMillis = {} - currentTimeMillis={} - diff={}",
-                        token.endValidityTimeMillis(),currentDt, token.endValidityTimeMillis()-currentDt);
-            }
-            else
-                log.trace("token=null - currentTimeMillis={}",currentDt);
+                        token.endValidityTimeMillis(), currentDt, token.endValidityTimeMillis() - currentDt);
+            } else
+                log.trace("token=null - currentTimeMillis={}", currentDt);
         }
     }
 }

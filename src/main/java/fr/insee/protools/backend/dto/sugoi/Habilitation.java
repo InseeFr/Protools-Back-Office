@@ -23,10 +23,9 @@ public class Habilitation implements Serializable {
 
     public String getId() {
         // raw id if specified, or build id from app role and property
-        if(id!=null){
+        if (id != null) {
             return id;
-        }
-        else if(this.property!=null){
+        } else if (this.property != null) {
             return this.property + "_" + this.role + "_" + this.application;
         }
         //else

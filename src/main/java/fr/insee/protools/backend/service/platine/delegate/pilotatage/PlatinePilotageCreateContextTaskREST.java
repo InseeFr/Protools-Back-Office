@@ -20,14 +20,14 @@ public class PlatinePilotageCreateContextTaskREST implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        log.info("ProcessInstanceId={}  begin",execution.getProcessInstanceId());
+        log.info("ProcessInstanceId={}  begin", execution.getProcessInstanceId());
         JsonNode contextRootNode = protoolsContext.getContextJsonNodeByProcessInstance(execution.getProcessInstanceId());
         ContexteProcessus contexteProcessus = protoolsContext.getContextDtoByProcessInstance(execution.getProcessInstanceId());
 
         //No context used (only passed as json)
-        platinePilotageService.postContext(contexteProcessus.getId().toString(),contextRootNode);
+        platinePilotageService.postContext(contexteProcessus.getId().toString(), contextRootNode);
 
-        log.info("ProcessInstanceId={}  end",execution.getProcessInstanceId());
+        log.info("ProcessInstanceId={}  end", execution.getProcessInstanceId());
 
     }
 }

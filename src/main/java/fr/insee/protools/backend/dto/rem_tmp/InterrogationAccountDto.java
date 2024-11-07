@@ -16,149 +16,150 @@ import java.util.UUID;
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-30T10:25:29.966974800+02:00[Europe/Paris]", comments = "Generator version: 7.8.0")
 public class InterrogationAccountDto {
 
-  private UUID interrogationId;
+    private UUID interrogationId;
 
-  private String account;
+    private String account;
 
-  public InterrogationAccountDto interrogationId(UUID interrogationId) {
-    this.interrogationId = interrogationId;
-    return this;
-  }
-
-  /**
-   * Get interrogationId
-   * @return interrogationId
-   */
-  @Valid 
-  @JsonProperty("interrogationId")
-  public UUID getInterrogationId() {
-    return interrogationId;
-  }
-
-  public void setInterrogationId(UUID interrogationId) {
-    this.interrogationId = interrogationId;
-  }
-
-  public InterrogationAccountDto account(String account) {
-    this.account = account;
-    return this;
-  }
-
-  /**
-   * Get account
-   * @return account
-   */
-  
-  @JsonProperty("account")
-  public String getAccount() {
-    return account;
-  }
-
-  public void setAccount(String account) {
-    this.account = account;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    InterrogationAccountDto interrogationAccount = (InterrogationAccountDto) o;
-    return Objects.equals(this.interrogationId, interrogationAccount.interrogationId) &&
-        Objects.equals(this.account, interrogationAccount.account);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(interrogationId, account);
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class InterrogationAccountDto {\n");
-    sb.append("    interrogationId: ").append(toIndentedString(interrogationId)).append("\n");
-    sb.append("    account: ").append(toIndentedString(account)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
-  
-  public static class Builder {
-
-    private InterrogationAccountDto instance;
-
-    public Builder() {
-      this(new InterrogationAccountDto());
-    }
-
-    protected Builder(InterrogationAccountDto instance) {
-      this.instance = instance;
-    }
-
-    protected Builder copyOf(InterrogationAccountDto value) { 
-      this.instance.setInterrogationId(value.interrogationId);
-      this.instance.setAccount(value.account);
-      return this;
-    }
-
-    public Builder interrogationId(UUID interrogationId) {
-      this.instance.interrogationId(interrogationId);
-      return this;
-    }
-    
-    public Builder account(String account) {
-      this.instance.account(account);
-      return this;
-    }
-    
     /**
-    * returns a built InterrogationAccountDto instance.
-    *
-    * The builder is not reusable (NullPointerException)
-    */
-    public InterrogationAccountDto build() {
-      try {
-        return this.instance;
-      } finally {
-        // ensure that this.instance is not reused
-        this.instance = null;
-      }
+     * Create a builder with no initialized field (except for the default values).
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public InterrogationAccountDto interrogationId(UUID interrogationId) {
+        this.interrogationId = interrogationId;
+        return this;
+    }
+
+    /**
+     * Get interrogationId
+     *
+     * @return interrogationId
+     */
+    @Valid
+    @JsonProperty("interrogationId")
+    public UUID getInterrogationId() {
+        return interrogationId;
+    }
+
+    public void setInterrogationId(UUID interrogationId) {
+        this.interrogationId = interrogationId;
+    }
+
+    public InterrogationAccountDto account(String account) {
+        this.account = account;
+        return this;
+    }
+
+    /**
+     * Get account
+     *
+     * @return account
+     */
+
+    @JsonProperty("account")
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        InterrogationAccountDto interrogationAccount = (InterrogationAccountDto) o;
+        return Objects.equals(this.interrogationId, interrogationAccount.interrogationId) &&
+                Objects.equals(this.account, interrogationAccount.account);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(interrogationId, account);
     }
 
     @Override
     public String toString() {
-      return getClass() + "=(" + instance + ")";
+        String sb = "class InterrogationAccountDto {\n" +
+                "    interrogationId: " + toIndentedString(interrogationId) + "\n" +
+                "    account: " + toIndentedString(account) + "\n" +
+                "}";
+        return sb;
     }
-  }
 
-  /**
-  * Create a builder with no initialized field (except for the default values).
-  */
-  public static Builder builder() {
-    return new Builder();
-  }
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
-  /**
-  * Create a builder with a shallow copy of this instance.
-  */
-  public Builder toBuilder() {
-    Builder builder = new Builder();
-    return builder.copyOf(this);
-  }
+    /**
+     * Create a builder with a shallow copy of this instance.
+     */
+    public Builder toBuilder() {
+        Builder builder = new Builder();
+        return builder.copyOf(this);
+    }
+
+    public static class Builder {
+
+        private InterrogationAccountDto instance;
+
+        public Builder() {
+            this(new InterrogationAccountDto());
+        }
+
+        protected Builder(InterrogationAccountDto instance) {
+            this.instance = instance;
+        }
+
+        protected Builder copyOf(InterrogationAccountDto value) {
+            this.instance.setInterrogationId(value.interrogationId);
+            this.instance.setAccount(value.account);
+            return this;
+        }
+
+        public Builder interrogationId(UUID interrogationId) {
+            this.instance.interrogationId(interrogationId);
+            return this;
+        }
+
+        public Builder account(String account) {
+            this.instance.account(account);
+            return this;
+        }
+
+        /**
+         * returns a built InterrogationAccountDto instance.
+         * <p>
+         * The builder is not reusable (NullPointerException)
+         */
+        public InterrogationAccountDto build() {
+            try {
+                return this.instance;
+            } finally {
+                // ensure that this.instance is not reused
+                this.instance = null;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return getClass() + "=(" + instance + ")";
+        }
+    }
 
 }
 
