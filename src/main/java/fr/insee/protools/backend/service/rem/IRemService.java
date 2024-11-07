@@ -9,6 +9,7 @@ import java.util.Map;
 public interface IRemService {
     
     PageResponse<JsonNode> getPartitionAllInterroPaginated(String partitionId, long page);
+    List<JsonNode> getLitOfInterro(List<String> interroIdList);
 
     List<String> getInterrogationIdsWithoutAccountForPartition(String partitionId);
 

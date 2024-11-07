@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 
 import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VARNAME_REM_INTERRO_LIST;
 
@@ -41,13 +40,13 @@ public class PlatineQuestionnaireCreateSurveyUnitTaskAsync implements JavaDelega
         ContexteProcessus context = protoolsContext.getContextDtoByProcessInstance(execution.getProcessInstanceId());
         //TODO: delete this log if necessary
         log.debug("ProcessInstanceId={}  - campagne={} - begin"
-                ,execution.getProcessInstanceId(),context.getId());
+                , execution.getProcessInstanceId(), context.getId());
 
-        checkContextOrThrow(log,execution.getProcessInstanceId(), context);
+        checkContextOrThrow(log, execution.getProcessInstanceId(), context);
 
 //        QuestionnaireHelper.createSUTaskPlatineAsync(execution,protoolsContext,iUniteEnquetee,platineQuestionnaireService);
 
-        List<JsonNode> listeUe =   FlowableVariableUtils.getVariableOrThrow(execution, VARNAME_REM_INTERRO_LIST, List.class);
+        List<JsonNode> listeUe = FlowableVariableUtils.getVariableOrThrow(execution, VARNAME_REM_INTERRO_LIST, List.class);
         String processInstanceId = execution.getProcessInstanceId();
         String currentActivityId = execution.getCurrentActivityId();
         iUniteEnquetee.addManyUniteEnquetee(listeUe, processInstanceId, currentActivityId);
@@ -56,7 +55,7 @@ public class PlatineQuestionnaireCreateSurveyUnitTaskAsync implements JavaDelega
 
 //        TODO gestion des timeouts
         while (!start) {
-            log.info("start : "+ start);
+            log.info("start : " + start);
             try {
                 long nbInterogation = iUniteEnquetee.getCommandesByProcessInstanceIdAndCurrentActivityId(execution.getProcessInstanceId(), execution.getCurrentActivityId());
                 start = taskService.isTerminated(execution.getProcessInstanceId(), execution.getCurrentActivityId(), nbInterogation);
@@ -70,6 +69,6 @@ public class PlatineQuestionnaireCreateSurveyUnitTaskAsync implements JavaDelega
             }
         }
         log.debug("ProcessInstanceId={}  - campagne={} - end",
-                execution.getProcessInstanceId(),context.getId());
+                execution.getProcessInstanceId(), context.getId());
     }
 }

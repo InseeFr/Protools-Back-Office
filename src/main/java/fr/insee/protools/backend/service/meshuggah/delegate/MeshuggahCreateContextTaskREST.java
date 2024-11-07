@@ -29,6 +29,6 @@ public class MeshuggahCreateContextTaskREST implements JavaDelegate, DelegateCon
 
         service.postContext(campainId,contextRootNode);
 
-        log.info("ProcessInstanceId={}  end",execution.getProcessInstanceId());
+        log.info("ProcessInstanceId={}  end", execution.getProcessInstanceId());
     }
 }

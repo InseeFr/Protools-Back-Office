@@ -23,15 +23,30 @@ import static fr.insee.protools.backend.restclient.configuration.ApiConfigProper
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RemServiceImpl implements IRemService{
+public class RemServiceImpl implements IRemService {
 
     private static final ApiConfigProperties.KNOWN_API API = KNOWN_API_REM;
     private final RestClientHelper restClientHelper;
     @Value("${fr.insee.protools.api.rem.interrogation.page.size:5000}")
     private int pageSizeGetInterro;
 
+    @Override
+    public List<JsonNode> getLitOfInterro(List<String> interroIdList) {
+        log.debug("getLitOfInterro: interroIdList={} -- begin", interroIdList);
+        ParameterizedTypeReference<List<JsonNode>> typeReference = new ParameterizedTypeReference<>() {
+        };
+        List<JsonNode> response = restClientHelper.getRestClient(API)
+                .post()
+                .uri("/interrogations/by_ids")
+                .body(interroIdList)
+                .retrieve()
+                .body(typeReference);
+        log.debug("getLitOfInterro: - response.size={} end", response.size());
+        return response;
+    }
+
     public PageResponse<JsonNode> getPartitionAllInterroPaginated(String partitionId, long page) {
-        log.debug("getPartitionAllInterroPaginated: partitionId={} - page={} - pageSizeGetInterro={} }", partitionId, page, pageSizeGetInterro);
+        log.debug("getPartitionAllInterroPaginated: partitionId={} - page={} - pageSizeGetInterro={} - begin", partitionId, page, pageSizeGetInterro);
         ParameterizedTypeReference<PageResponse<JsonNode>> typeReference = new ParameterizedTypeReference<>() {
         };
         try {
@@ -45,8 +60,8 @@ public class RemServiceImpl implements IRemService{
                             .build())
                     .retrieve()
                     .body(typeReference);
-            if(response==null){
-                response=new PageResponse<>();
+            if (response == null) {
+                response = new PageResponse<>();
             }
             log.trace("getPartitionAllInterroPaginated: partitionId={} - page={} - pageSizeGetInterro={} - response={} ", partitionId, page, pageSizeGetInterro, response.getContent().size());
             return response;

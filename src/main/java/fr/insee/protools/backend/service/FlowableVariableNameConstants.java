@@ -18,7 +18,7 @@ public class FlowableVariableNameConstants {
 
     //For communication
     public static final String VARNAME_CURRENT_COMMUNICATION_ID="current_communication_id";
-    public static final String VARNAME_COMMUNICATION_REQUEST_ID_FOR_INTERRO_ID_MAP="communication_request_id_by_interrogation_id";
+    public static final String VARNAME_COMMUNICATION_REQUEST_ID_AND_STATUS_FOR_INTERRO_ID_MAP="communication_request_id_and_status_by_interrogation_id";
     //List of the UUIDs of the communications that have already been scheduled
     public static final String VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET = "communication_already_scheduled_id_set";
     //List of the UUIDs of the communcation that are in error (echeance was too far past)
@@ -31,7 +31,10 @@ public class FlowableVariableNameConstants {
     public static final String VARNAME_INTERRO_LIST_PAGEABLE_IS_LAST_PAGE ="interro_list_page_is_last";
     public static final String VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE ="interro_list_page_current";
 
-
+    //Platine Pilotage Follow-up pageable
+    public static final String VARNAME_ID_INTERRO_LIST ="id_interro_list";
+    public static final String VARNAME_FOLLOW_UP_LIST_PAGEABLE_IS_LAST_PAGE ="follow_up_page_is_last";
+    public static final String VARNAME_FOLLOW_UP_LIST_PAGEABLE_CURRENT_PAGE ="follow_up_page_current";
     //Contacts
     public static final String VARNAME_PLATINE_CONTACT_LIST ="platine_contact_list";
 

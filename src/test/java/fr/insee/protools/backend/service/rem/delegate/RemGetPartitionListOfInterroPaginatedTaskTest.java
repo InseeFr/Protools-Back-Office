@@ -9,10 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Map;
 
-import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VARNAME_CURRENT_PARTITION_ID;
-import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VARNAME_REM_INTERRO_LIST;
+import static fr.insee.protools.backend.service.FlowableVariableNameConstants.*;
+import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VARNAME_PLATINE_CONTACT_LIST;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -23,7 +24,7 @@ class RemGetPartitionListOfInterroPaginatedTaskTest implements IDelegateWithVari
     @Mock
     RemServiceImpl remService;
     @InjectMocks
-    RemGetPartitionListOfInterroPaginatedTask task;
+    RemGetPartitionListOfInterroPaginatedTaskREST task;
 
     @Override
     public JavaDelegate getTaskUnderTest() {
@@ -43,7 +44,18 @@ class RemGetPartitionListOfInterroPaginatedTaskTest implements IDelegateWithVari
     }
 
     @Override
-    public String getOutListVariableName() {
-        return VARNAME_REM_INTERRO_LIST;
+    public List<String> getOutListsVariableName() {
+        return List.of(VARNAME_REM_INTERRO_LIST);
     }
+
+    @Override
+    public String getVarnameCurrentPage() {
+        return VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE;
+    }
+
+    @Override
+    public String getVarnameisLastPage() {
+        return VARNAME_INTERRO_LIST_PAGEABLE_IS_LAST_PAGE;
+    }
+
 }

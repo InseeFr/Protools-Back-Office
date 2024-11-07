@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+
+                           http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <bean id="sugoiREMCreateMissingAccountListTask" class="fr.insee.protools.backend.service.sugoi_rem.delegate.SugoiREMCreateMissingAccountListTask">
+        <constructor-arg  name="remService" ref="remService"/>
+        <constructor-arg  name="sugoiService" ref="sugoiService"/>
+        <constructor-arg  name="passwordService" ref="passwordService"/>
+        <constructor-arg  name="protoolsContext" ref="protoolsContext"/>
+
+
+
+    </bean>
+    <bean id="remService" class="fr.insee.protools.backend.integration.delegate_and_services_stub.RemServiceStub"></bean>
+    <bean id="sugoiService" class="fr.insee.protools.backend.integration.delegate_and_services_stub.SugoiServiceStub"></bean>
+    <bean id="passwordService" class="fr.insee.protools.backend.service.utils.password.PasswordServiceImpl"></bean>
+    <bean id="protoolsContext" class="fr.insee.protools.backend.service.context.ContextServiceImpl"></bean>
+
+</beans>

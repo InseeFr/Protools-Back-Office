@@ -5,7 +5,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.classic.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.insee.protools.backend.dto.internal.CommunicationRequestDetails;
 import fr.insee.protools.backend.dto.platine.pilotage.PlatinePilotageCommunicationEventDto;
+import fr.insee.protools.backend.dto.platine.pilotage.PlatinePilotageCommunicationEventType;
 import fr.insee.protools.backend.exception.ProtoolsProcessFlowBPMNError;
 import fr.insee.protools.backend.service.platine.service.PlatinePilotageServiceImpl;
 import fr.insee.protools.backend.service.utils.delegate.IDelegateWithVariables;
@@ -40,6 +43,8 @@ import static org.mockito.Mockito.*;
 @Slf4j
 public class PlatinePilotageCreateCommunicationEventTaskRESTTestDelegate implements IDelegateWithVariables {
 
+    private static ObjectMapper objectMapper = new ObjectMapper();
+
     @Mock
     PlatinePilotageServiceImpl platinePilotageService;
 
@@ -56,27 +61,31 @@ public class PlatinePilotageCreateCommunicationEventTaskRESTTestDelegate impleme
         return Map.of(
                 VARNAME_CURRENT_COMMUNICATION_ID, String.class,
                 VARNAME_CURRENT_PARTITION_ID, String.class,
-                VARNAME_COMMUNICATION_REQUEST_ID_FOR_INTERRO_ID_MAP, Map.class
+                VARNAME_COMMUNICATION_REQUEST_ID_AND_STATUS_FOR_INTERRO_ID_MAP, Map.class
         );
     }
 
     static Stream<Arguments> initExecuteParametersOK() {
         return Stream.of(
                 Arguments.of(Map.of(), "comId", Boolean.FALSE),
-                Arguments.of(Map.of("interroId1", "commReqId1"), "xxx", Boolean.TRUE),
-                Arguments.of(Map.of("interroId1", "commReqId1", "interroId2", "commReqId2", "interroId3", "commReqId3"), "xxx", Boolean.TRUE)
+                Arguments.of(Map.of("interroId1", new CommunicationRequestDetails("comReqId1",PlatinePilotageCommunicationEventType.COMMUNICATION_STATE_SENT)), "xxx", Boolean.TRUE),
+                Arguments.of(Map.of(
+                        "interroId1", new CommunicationRequestDetails("comReqId1",PlatinePilotageCommunicationEventType.COMMUNICATION_STATE_SENT),
+                        "interroId2", new CommunicationRequestDetails("comReqId2",PlatinePilotageCommunicationEventType.COMMUNICATION_STATE_SENT),
+                        "interroId3", new CommunicationRequestDetails("comReqId3",PlatinePilotageCommunicationEventType.COMMUNICATION_STATE_SENT)),
+                        "xxx", Boolean.TRUE)
         );
     }
 
     @ParameterizedTest
     @MethodSource("initExecuteParametersOK")
     @DisplayName("Test execute method - should work and make correct call to service")
-    void execute_should_work_whenEverythingOk(Map<String, String> commIdByInterro, String communcationId, Boolean expectedCallToService) {
+    void execute_should_work_whenEverythingOk(Map<String, CommunicationRequestDetails> commIdByInterro, String communcationId, Boolean expectedCallToService) {
         //Prepare
         DelegateExecution execution = createMockedExecution();
         doReturn(communcationId).when(execution).getVariable(VARNAME_CURRENT_COMMUNICATION_ID, String.class);
         doReturn(dumyId).when(execution).getVariable(VARNAME_CURRENT_PARTITION_ID, String.class);
-        doReturn(commIdByInterro).when(execution).getVariable(VARNAME_COMMUNICATION_REQUEST_ID_FOR_INTERRO_ID_MAP, Map.class);
+        doReturn(commIdByInterro).when(execution).getVariable(VARNAME_COMMUNICATION_REQUEST_ID_AND_STATUS_FOR_INTERRO_ID_MAP, Map.class);
 
         //Execute method under test
         task.execute(execution);
@@ -106,9 +115,9 @@ public class PlatinePilotageCreateCommunicationEventTaskRESTTestDelegate impleme
             String idInterro = comEventDto.interrogationId();
             if (requiredInterroIds.contains(idInterro)) {
                 //ComRequestId is correct
-                String expectedCommId = commIdByInterro.get(idInterro);
+                String expectedCommReqId = commIdByInterro.get(idInterro).communicationRequestId();
                 String actualCommReqId = comEventDto.communicationRequestId();
-                assertEquals(expectedCommId, actualCommReqId,
+                assertEquals(expectedCommReqId, actualCommReqId,
                         "Communcation Request ID is not the one expected for idInterro=" + idInterro + " - ");
 
                 assertEquals(communcationId,comEventDto.communicationId());
@@ -126,7 +135,7 @@ public class PlatinePilotageCreateCommunicationEventTaskRESTTestDelegate impleme
         DelegateExecution execution = createMockedExecution();
         doReturn(commId).when(execution).getVariable(VARNAME_CURRENT_COMMUNICATION_ID, String.class);
         doReturn(dumyId).when(execution).getVariable(VARNAME_CURRENT_PARTITION_ID, String.class);
-        doReturn(Map.of("interroId1", "commReqId1")).when(execution).getVariable(VARNAME_COMMUNICATION_REQUEST_ID_FOR_INTERRO_ID_MAP, Map.class);
+        doReturn(Map.of("interroId1", new CommunicationRequestDetails("comReqId1",PlatinePilotageCommunicationEventType.COMMUNICATION_STATE_SENT))).when(execution).getVariable(VARNAME_COMMUNICATION_REQUEST_ID_AND_STATUS_FOR_INTERRO_ID_MAP, Map.class);
 
         //Execute method under test
         assertThrows(ProtoolsProcessFlowBPMNError.class, () -> task.execute(execution));

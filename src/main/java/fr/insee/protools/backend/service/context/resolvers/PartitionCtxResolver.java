@@ -25,13 +25,13 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.*;
 /**
  * Used to make protools context variables available in BPMN expressions
  * example:
- *   <intermediateCatchEvent id="id1" name="dummy">
- *     <timerEventDefinition>
- *       <timeDate>${partitionCtxResolver.getCollectionStartDate(execution,current_partition_id)}</timeDate>
- *     </timerEventDefinition>
- *   </intermediateCatchEvent>
+ * <intermediateCatchEvent id="id1" name="dummy">
+ * <timerEventDefinition>
+ * <timeDate>${partitionCtxResolver.getCollectionStartDate(execution,current_partition_id)}</timeDate>
+ * </timerEventDefinition>
+ * </intermediateCatchEvent>
  * <p>
- *   Flowable doc : https://documentation.flowable.com/latest/develop/be/be-expressions#customization
+ * Flowable doc : https://documentation.flowable.com/latest/develop/be/be-expressions#customization
  */
 @Component
 @RequiredArgsConstructor
@@ -47,13 +47,13 @@ public class PartitionCtxResolver {
 
     private Optional<Lot> getPartition(ExecutionEntity execution, String partitionId) {
         var context = protoolsContext.getContextDtoByProcessInstance(execution.getProcessInstanceId());
-         return context.getLots().stream()
+        return context.getLots().stream()
                 .filter(x -> String.valueOf(x.getId()).equalsIgnoreCase(partitionId))
                 .findAny();
     }
 
     public Instant getCollectionStartDate(ExecutionEntity execution, String partitionId) {
-        return getPartition(execution,partitionId)
+        return getPartition(execution, partitionId)
                 .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get Collection Start date on undefined partition"))
                 .getDateDebutCollecte();
     }
@@ -65,12 +65,12 @@ public class PartitionCtxResolver {
     }
 
     public String getCommunicationType(ExecutionEntity execution, String partitionId, String communicationId) {
-        return getPartition(execution,partitionId)
-                .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get communication type on an unknown partition : "+partitionId))
+        return getPartition(execution, partitionId)
+                .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get communication type on an unknown partition : " + partitionId))
                 .getCommunications().stream()
                 .filter(x -> String.valueOf(x.getId()).equalsIgnoreCase(communicationId))
                 .findAny()
-                .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get communication type on an unknown communication : "+communicationId))
+                .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get communication type on an unknown communication : " + communicationId))
                 .getTypeCommunication().toString();
     }
 
@@ -92,8 +92,8 @@ public class PartitionCtxResolver {
         Instant now = Instant.now();
 
         // Retrieve the partition or throw an error if not found
-        Lot partition =  getPartition(execution,partitionId)
-                .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get schedule next communication on an unknown partition : "+partitionId));
+        Lot partition = getPartition(execution, partitionId)
+                .orElseThrow(() -> new IncoherentBPMNContextError("Tried to get schedule next communication on an unknown partition : " + partitionId));
 
         Set<String> scheduledCommunicationIds = FlowableVariableUtils.getVariableOrNull(execution, VARNAME_ALREADY_SCHEDULED_COMMUNICATION_ID_SET, Set.class);
         Set<String> errorCommunicationIds = FlowableVariableUtils.getVariableOrNull(execution, VARNAME_COMMUNICATION_ERROR_ID_SET, Set.class);

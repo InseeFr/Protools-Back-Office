@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 )
 public class TaskService {
 
-  private final IUniteEnquetee iUniteEnquetee;
+    private final IUniteEnquetee iUniteEnquetee;
 
-  public TaskService(IUniteEnquetee iUniteEnquetee) {
-    this.iUniteEnquetee = iUniteEnquetee;
-  }
+    public TaskService(IUniteEnquetee iUniteEnquetee) {
+        this.iUniteEnquetee = iUniteEnquetee;
+    }
 
-  public boolean isTerminated(String processInstanceId, String currentActivityId, long nbInterogation) throws InterruptedException {
-    log.info("IUniteEnquetee.isTerminated");
+    public boolean isTerminated(String processInstanceId, String currentActivityId, long nbInterogation) throws InterruptedException {
+        log.info("IUniteEnquetee.isTerminated");
 //    TODO : iUniteEnquetee.getCommandesBygetProcessInstanceIdAndIdTask(1,2)
-    return iUniteEnquetee.isTerminated(processInstanceId, currentActivityId, nbInterogation);
-  }
+        return iUniteEnquetee.isTerminated(processInstanceId, currentActivityId, nbInterogation);
+    }
 
 
 }

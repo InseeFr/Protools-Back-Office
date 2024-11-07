@@ -30,8 +30,8 @@ public class PlatinePilotageCreateInterrogationListTaskREST implements JavaDeleg
         String currentPartitionId = FlowableVariableUtils.getVariableOrThrow(execution, VARNAME_CURRENT_PARTITION_ID, String.class);
         List<JsonNode> interroList = FlowableVariableUtils.getVariableOrThrow(execution, VARNAME_REM_INTERRO_LIST, List.class);
 
-        log.info("ProcessInstanceId={} - currentPartitionId={} - begin",execution.getProcessInstanceId(),currentPartitionId);
-        platinePilotageService.postInterrogations(String.valueOf(context.getId()),interroList);
-        log.info("ProcessInstanceId={} - currentPartitionId={} - end",execution.getProcessInstanceId(),currentPartitionId);
+        log.info("ProcessInstanceId={} - currentPartitionId={} - begin", execution.getProcessInstanceId(), currentPartitionId);
+        platinePilotageService.postInterrogations(String.valueOf(context.getId()), interroList);
+        log.info("ProcessInstanceId={} - currentPartitionId={} - end", execution.getProcessInstanceId(), currentPartitionId);
     }
 }

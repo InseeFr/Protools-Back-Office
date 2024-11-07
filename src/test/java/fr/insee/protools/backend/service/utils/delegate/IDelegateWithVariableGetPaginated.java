@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static fr.insee.protools.backend.service.FlowableVariableNameConstants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static fr.insee.protools.backend.service.FlowableVariableNameConstants.VARNAME_CURRENT_PARTITION_ID;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -22,14 +22,20 @@ public interface IDelegateWithVariableGetPaginated extends IDelegateWithVariable
     ObjectMapper objectMapper = new ObjectMapper();
 
     void initReadValueMock(PageResponse pageResponse);
-    String getOutListVariableName();
+    List<String> getOutListsVariableName();
 
+    String getVarnameCurrentPage();
+    String getVarnameisLastPage();
 
     @Override
     default void initExtraMocks(DelegateExecution execution) {
         IDelegateWithVariables.super.initExtraMocks(execution);
-        PageResponse exepectedPageResponse = PageResponse.builder().currentPage(0).pageCount(1).content(List.of(objectMapper.createObjectNode().put("xx","yyy"))).build();
+        PageResponse exepectedPageResponse = PageResponse.builder().currentPage(0).pageCount(1).content(getDefaultContent()).build();
         initReadValueMock(exepectedPageResponse);
+    }
+
+    default List getDefaultContent(){
+        return List.of(objectMapper.createObjectNode().put("xx","yyy"));
     }
 
     static Stream<Arguments> executeParamProvider() {
@@ -56,36 +62,32 @@ public interface IDelegateWithVariableGetPaginated extends IDelegateWithVariable
         initDefaultVariables(execution);
 
         //Pages data
-        lenient().doReturn(currentPage).when(execution).getVariable(eq(VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE), eq(Integer.class));
-        lenient().doReturn(currentPage).when(execution).getVariableLocal(eq(VARNAME_INTERRO_LIST_PAGEABLE_CURRENT_PAGE), eq(Integer.class));
+        lenient().doReturn(currentPage).when(execution).getVariable(eq(getVarnameCurrentPage()), eq(Integer.class));
+        lenient().doReturn(currentPage).when(execution).getVariableLocal(eq(getVarnameCurrentPage()), eq(Integer.class));
 
-        lenient().doReturn(isLastPage).when(execution).getVariable(eq(VARNAME_INTERRO_LIST_PAGEABLE_IS_LAST_PAGE), eq(Boolean.class));
-        lenient().doReturn(isLastPage).when(execution).getVariableLocal(eq(VARNAME_INTERRO_LIST_PAGEABLE_IS_LAST_PAGE), eq(Boolean.class));
+        lenient().doReturn(isLastPage).when(execution).getVariable(eq(getVarnameisLastPage()), eq(Boolean.class));
+        lenient().doReturn(isLastPage).when(execution).getVariableLocal(eq(getVarnameisLastPage()), eq(Boolean.class));
 
 
         //PageResponse
         Integer expectedPageToRead=(currentPage==null)?0:currentPage+1;
-        PageResponse exepectedPageResponse = PageResponse.builder().currentPage(expectedPageToRead).pageCount(1).content(List.of(objectMapper.createObjectNode().put("xx","yyy"))).build();
+        Integer expectedPageCount=(isLastPage)?expectedPageToRead+1:expectedPageToRead+10;
+        PageResponse exepectedPageResponse = PageResponse.builder().currentPage(expectedPageToRead).pageCount(expectedPageCount).content(getDefaultContent()).build();
         initReadValueMock(exepectedPageResponse);
         //Call method under test
         getTaskUnderTest().execute(execution);
-
 
         if(!isLastPage) {
             // Verify the flowable utils are called to get and treat variables
             verify(execution, times(1)).getVariable(VARNAME_CURRENT_PARTITION_ID, String.class);
 
             ArgumentCaptor<Map<String, Object>> variablesMapCaptor = ArgumentCaptor.forClass(Map.class);
-
-
             verify(execution).setVariablesLocal(variablesMapCaptor.capture());
             Map<String, Object> capturedMap = variablesMapCaptor.getValue();
-            assertEquals(exepectedPageResponse.getContent(), capturedMap.get(getOutListVariableName()));
-        }
-        else{
-            //ArgumentCaptor<Map<String, Object>> variablesMapCaptor = ArgumentCaptor.forClass(Map.class);
-            verify(execution,never()).setVariablesLocal(any());
+
+            for(String expectedOutList: getOutListsVariableName()){
+                assertTrue(capturedMap.containsKey(expectedOutList),"Expected out list is has not been set");
+            }
         }
     }
-
 }

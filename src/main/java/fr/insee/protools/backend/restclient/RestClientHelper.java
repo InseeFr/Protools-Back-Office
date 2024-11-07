@@ -125,6 +125,7 @@ public class RestClientHelper {
                 .wiretap(this.getClass().getCanonicalName(), LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL)
                 // Increase the buffer size and adjust Netty options for large payloads
                 .option(ChannelOption.SO_RCVBUF, 1048576 * 10) // Adjust receive buffer size
+                .followRedirect(true)
                 .compress(true));
         requestFactory.setExchangeTimeout(exchangeTimeout);
         requestFactory.setReadTimeout(readTimeout);

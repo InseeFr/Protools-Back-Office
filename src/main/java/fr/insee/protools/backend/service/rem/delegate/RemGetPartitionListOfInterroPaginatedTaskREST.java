@@ -24,7 +24,7 @@ import static fr.insee.protools.backend.service.FlowableVariableNameConstants.*;
 @Component
 @Data
 @RequiredArgsConstructor
-public class RemGetPartitionListOfInterroPaginatedTask implements JavaDelegate, DelegateContextVerifier, PaginationHelper {
+public class RemGetPartitionListOfInterroPaginatedTaskREST implements JavaDelegate, DelegateContextVerifier, PaginationHelper {
 
     private final IRemService remService;
 
