@@ -19,7 +19,7 @@
         <flowable.version>7.0.1-insee</flowable.version>
         <pitest.version>1.16.1</pitest.version>
         <pitest.junit.version>1.2.1</pitest.junit.version>
-        <passay.version>1.6.4</passay.version>
+        <passay.version>1.6.6</passay.version>
         <groovy-version>4.0.21</groovy-version>
         <!-- Used in tests -->
         <mockwebserver.version>4.12.0</mockwebserver.version>
